@@ -12,7 +12,9 @@ const {
   getSpotifyProfile,
   disconnectSpotify,
   getValidAccessToken,
-  fetchUserTopTracks
+  fetchUserTopTracks,
+  testSpotifyConnection,
+  searchTracks
 } = require('../services/spotifyService');
 const supabase = require('../utils/supabase');
 const { getOrCreateUserUUID } = require('../utils/userMapping');
@@ -293,13 +295,78 @@ const createMoodPlaylist = async (req, res) => {
     console.log('🎵 Creating mood playlist for user:', userId);
     console.log('🎵 Mood text:', moodText);
     console.log('🎵 Number of tracks:', tracks?.length || 0);
+    console.log('🎵 Sample track structure:', tracks?.[0] ? Object.keys(tracks[0]) : 'No tracks');
     
     if (!moodText || !tracks || tracks.length === 0) {
       return res.status(400).json({ error: 'Missing required fields: moodText and tracks' });
     }
     
     const userUUID = await getOrCreateUserUUID(userId);
-    const result = await createPlaylistForMood(userUUID, moodText, tracks);
+    
+    // Convert tracks to Spotify URIs by searching for them if needed
+    const trackUris = [];
+    
+    for (let i = 0; i < tracks.length; i++) {
+      const track = tracks[i];
+      try {
+        if (typeof track === 'string') {
+          // If it's already a URI, use it; otherwise assume it's a track ID
+          trackUris.push(track.startsWith('spotify:track:') ? track : `spotify:track:${track}`);
+        } else if (track && typeof track === 'object') {
+          // Check for various possible properties in the track object
+          const trackId = track.uri || track.id || track.track_id || track.trackId || track.spotify_id;
+          
+          if (trackId) {
+            // If it's already a URI, use it; otherwise convert to URI
+            trackUris.push(trackId.startsWith('spotify:track:') ? trackId : `spotify:track:${trackId}`);
+          } else if (track.track_name && track.artist_name) {
+            // Search for the track on Spotify using name and artist
+            console.log(`🔍 Searching for track: "${track.track_name}" by "${track.artist_name}"`);
+            const searchQuery = `track:"${track.track_name}" artist:"${track.artist_name}"`;
+            
+            // Use the service function instead of direct API call
+            const searchResult = await searchTracks(userUUID, searchQuery, 1);
+            
+            if (searchResult && searchResult.length > 0) {
+              const foundTrack = searchResult[0];
+              trackUris.push(foundTrack.uri);
+              console.log(`✅ Found track: ${foundTrack.name} by ${foundTrack.artists[0].name}`);
+            } else {
+              console.warn(`⚠️ Track not found on Spotify: "${track.track_name}" by "${track.artist_name}"`);
+              // Skip this track instead of failing the entire playlist
+              continue;
+            }
+          } else {
+            // Log the track structure for debugging
+            console.log(`🔍 Track ${i} structure:`, Object.keys(track));
+            throw new Error(`Track ${i} missing required fields. Available fields: ${Object.keys(track).join(', ')}`);
+          }
+        } else {
+          throw new Error(`Track ${i} is neither string nor object: ${typeof track}`);
+        }
+      } catch (err) {
+        console.error(`❌ Error processing track ${i}:`, err.message);
+        console.error(`❌ Track data:`, track);
+        // Continue with other tracks instead of failing entirely
+        console.warn(`⚠️ Skipping track ${i} due to error: ${err.message}`);
+        continue;
+      }
+    }
+    
+    console.log(`🎵 Successfully processed ${trackUris.length} out of ${tracks.length} tracks`);
+    console.log('🎵 Sample track URIs:', trackUris.slice(0, 3), '...');
+    
+    if (trackUris.length === 0) {
+      return res.status(400).json({ 
+        error: 'No tracks could be found on Spotify. Please check track names and artist names.',
+        suggestion: 'Make sure the track and artist names are spelled correctly and exist on Spotify.'
+      });
+    }
+    
+    const playlistName = `Sarang - ${moodText}`;
+    const description = `A mood-based playlist created by Sarang for: ${moodText}. Contains ${trackUris.length} tracks.`;
+    
+    const result = await createPlaylistForMood(userUUID, playlistName, trackUris, description);
     
     // Store playlist info in database
     await supabase
@@ -310,7 +377,7 @@ const createMoodPlaylist = async (req, res) => {
         spotify_playlist_id: result.playlist_id,
         spotify_playlist_url: result.playlist_url,
         mood_context: moodText,
-        track_count: result.tracks_added || tracks.length
+        track_count: result.tracks_added || trackUris.length
       });
     
     res.json(result);
@@ -414,6 +481,35 @@ const checkActiveDevices = async (req, res) => {
   }
 };
 
+const testSpotifyConnectionEndpoint = async (req, res) => {
+  try {
+    const { userId } = req.auth;
+    const userUUID = await getOrCreateUserUUID(userId);
+    
+    console.log('🧪 Testing Spotify connection for user:', userUUID);
+    
+    // Use the service function to test connection
+    const result = await testSpotifyConnection(userUUID);
+    
+    res.json({
+      success: true,
+      message: 'Spotify connection is working properly',
+      spotifyUser: {
+        id: result.id,
+        displayName: result.user
+      }
+    });
+    
+  } catch (error) {
+    console.error('🧪 Spotify connection test failed:', error);
+    res.json({
+      success: false,
+      error: error.message,
+      suggestion: 'Check server logs for more details'
+    });
+  }
+};
+
 const fetchTopTracks = async (req, res) => {
   const { userId } = req.auth;
   const { limit = 50, timeRange = 'medium_term' } = req.query;
@@ -438,8 +534,8 @@ const fetchTopTracks = async (req, res) => {
 };
 
 module.exports = { 
-  authorizeSpotify, 
-  handleSpotifyCallback, 
+  authorizeSpotify,
+  handleSpotifyCallback,
   getConnectionStatus,
   fetchLikedSongs,
   syncAllLikedSongs,
@@ -453,5 +549,6 @@ module.exports = {
   getUserPreferenceTracks,
   grantTopTracksPermission,
   revokeTopTracksPermission,
-  getTopTracksPermissionStatus
+  getTopTracksPermissionStatus,
+  testSpotifyConnectionEndpoint
 };

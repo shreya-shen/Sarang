@@ -14,7 +14,8 @@ const {
   fetchTopTracks,
   grantTopTracksPermission,
   revokeTopTracksPermission,
-  getTopTracksPermissionStatus
+  getTopTracksPermissionStatus,
+  testSpotifyConnectionEndpoint
 } = require('../controllers/spotifyController');
 const requireAuth = require('../utils/clerkAuth');
 
@@ -25,6 +26,9 @@ router.get('/authorize', requireAuth, authorizeSpotify);
 router.get('/callback', handleSpotifyCallback);
 router.get('/status', requireAuth, getConnectionStatus);
 router.delete('/disconnect', requireAuth, disconnectSpotifyAccount);
+
+// Debug route
+router.get('/test-connection', requireAuth, testSpotifyConnectionEndpoint);
 
 // Music data routes
 router.get('/liked', requireAuth, fetchLikedSongs);
