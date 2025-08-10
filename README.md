@@ -1,4 +1,4 @@
-# 🎵 Sarang - AI-Powered Music Recommendation Platform
+# Sarang - AI-Powered Music Recommendation Platform
 
 Sarang is an intelligent music recommendation system that analyzes your mood through text input and creates personalized Spotify playlists. Built with React, Node.js, Python ML pipeline, and integrated with Spotify Web API.
 
@@ -7,12 +7,12 @@ Sarang is an intelligent music recommendation system that analyzes your mood thr
 ## 🌟 Features
 
 ### Core Functionality
-- **🧠 AI Mood Analysis**: Advanced sentiment analysis using DistilBERT NLP model
-- **🎯 Smart Recommendations**: K-means clustering (k=7) on 48,210-track dataset with 17 audio features
-- **🎵 Spotify Integration**: Seamless playlist creation and playback control
-- **📊 Personalization**: User preference tracking based on top tracks and listening history
-- **🔐 Secure Authentication**: JWT-based auth with Clerk integration
-- **📱 Responsive Design**: Modern UI with TailwindCSS and Radix components
+- ** AI Mood Analysis**: Advanced sentiment analysis using DistilBERT NLP model
+- ** Smart Recommendations**: K-means clustering (k=7) on 48,210-track dataset with 17 audio features
+- ** Spotify Integration**: Seamless playlist creation and playback control
+- ** Personalization**: User preference tracking based on top tracks and listening history
+- ** Secure Authentication**: JWT-based auth with Clerk integration
+- ** Responsive Design**: Modern UI with TailwindCSS and Radix components
 
 ### Advanced Features
 - **Real-time Mood Detection**: Process natural language mood descriptions
@@ -21,7 +21,7 @@ Sarang is an intelligent music recommendation system that analyzes your mood thr
 - **Device Control**: Play tracks on active Spotify devices
 - **Permission System**: Granular access control for user data
 
-## 🏗️ Architecture
+## Architecture
 
 ### Frontend Stack
 - **React 18** with TypeScript
@@ -50,7 +50,7 @@ Sarang is an intelligent music recommendation system that analyzes your mood thr
 - **Supabase** for database and real-time features
 - **ngrok** for HTTPS tunneling during development
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm
@@ -177,7 +177,7 @@ The application will be available at:
 - Backend API: `http://localhost:5000`
 - ngrok HTTPS: `https://your-random-id.ngrok.io`
 
-## 📊 Data & ML Pipeline
+## Data & ML Pipeline
 
 ### Dataset Statistics
 - **48,210 tracks** from Spotify
@@ -203,68 +203,7 @@ features = [
 - **Response Time**: <2s for mood analysis and recommendation
 - **Dataset Coverage**: 50+ genres, 10K+ artists
 
-## 🗂️ Project Structure
-
-```
-Sarang/
-├── client/                     # React frontend
-│   ├── src/
-│   │   ├── components/        # Reusable UI components
-│   │   ├── pages/            # Route components
-│   │   ├── hooks/            # Custom React hooks
-│   │   ├── contexts/         # React context providers
-│   │   ├── services/         # API client services
-│   │   └── lib/              # Utility libraries
-│   ├── public/               # Static assets
-│   └── package.json
-│
-├── server/                     # Node.js backend
-│   ├── controllers/          # Route handlers
-│   ├── services/             # Business logic
-│   ├── routes/               # API routes
-│   ├── utils/                # Helper utilities
-│   ├── database/             # SQL schemas and migrations
-│   ├── python/               # ML pipeline scripts
-│   │   ├── moodBasedRecs.py  # Main recommendation engine
-│   │   ├── sentiment_analysis.py # NLP processing
-│   │   ├── cleaned_spotify.csv   # Training dataset
-│   │   └── requirements.txt  # Python dependencies
-│   └── package.json
-│
-├── docs/                      # Documentation
-│   ├── INTERVIEW_GUIDE.md    # Development interview notes
-│   ├── INTERVIEW_RESPONSES.md # Technical Q&A
-│   └── NGROK_RESTART_GUIDE.md # Deployment guide
-│
-└── README.md                  # This file
-```
-
-## 🔗 API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-- `GET /api/auth/status` - Check auth status
-
-### Spotify Integration
-- `GET /api/spotify/auth` - Get Spotify authorization URL
-- `GET /api/spotify/callback` - Handle OAuth callback
-- `GET /api/spotify/status` - Check connection status
-- `POST /api/spotify/create-playlist` - Create mood playlist
-- `GET /api/spotify/devices` - Get available devices
-- `POST /api/spotify/play` - Play track on device
-
-### Recommendations
-- `POST /api/recommendations/mood` - Get mood-based recommendations
-- `GET /api/recommendations/history` - User recommendation history
-- `POST /api/mood/analyze` - Analyze mood from text
-
-### User Management
-- `GET /api/user/profile` - Get user profile
-- `GET /api/user/playlists` - Get user playlists
-- `POST /api/user/preferences` - Update preferences
-
-## 🛠️ Development
+## Development
 
 ### Code Style
 - **ESLint** with TypeScript configuration
@@ -288,7 +227,7 @@ Sarang/
 - Configure production Clerk environment
 - Set up production Spotify app with HTTPS redirect
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
@@ -305,10 +244,6 @@ Sarang/
 ## Support
 
 For support and questions:
-- 📧 Email: shreya.shenoy01@gmail.com
-- 🐛 Issues: [GitHub Issues](https://github.com/shreya-shen/Sarang/issues)
-- 📖 Documentation: [Project Wiki](https://github.com/shreya-shen/Sarang/wiki)
-
----
-
-**Built with ❤️ by Shreya** 
+- Email: shreya.shenoy01@gmail.com
+- Issues: [GitHub Issues](https://github.com/shreya-shen/Sarang/issues)
+- Documentation: [Project Wiki](https://github.com/shreya-shen/Sarang/wiki)
