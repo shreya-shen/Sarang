@@ -245,5 +245,3 @@ features = [
 
 For support and questions:
 - Email: shreya.shenoy01@gmail.com
-- Issues: [GitHub Issues](https://github.com/shreya-shen/Sarang/issues)
-- Documentation: [Project Wiki](https://github.com/shreya-shen/Sarang/wiki)
