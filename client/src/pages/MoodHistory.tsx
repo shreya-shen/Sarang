@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -118,7 +117,7 @@ const MoodHistory = () => {
             My Mood Journey
           </h1>
           <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sarang-purple"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sarang-coral"></div>
           </div>
         </div>
       </div>
@@ -130,26 +129,26 @@ const MoodHistory = () => {
     return (
       <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
         <div className="text-center space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-sarang-purple">
+          <h1 className="text-3xl md:text-4xl font-bold text-sarang-charcoal font-['Montserrat']">
             My Mood Journey
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sarang-brown max-w-2xl mx-auto font-['Montserrat']">
             Track your emotional wellness and see how music therapy is helping you over time
           </p>
         </div>
         
-        <Card className="mood-card text-center py-16">
+        <Card className="bg-transparent border-2 border-black rounded-xl text-center py-16">
           <CardContent>
             <HeadphonesIcon className="h-16 w-16 text-sarang-lavender mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Your history will appear here
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 font-semibold">
               Start by analyzing your mood to see your journey unfold
             </p>
             <Button 
               onClick={() => navigate("/")}
-              className="bg-gradient-to-r from-sarang-purple to-sarang-periwinkle hover:from-sarang-purple/90 hover:to-sarang-periwinkle/90 text-white"
+              className="bg-[#213447] hover:bg-[#213447]/90 text-white"
             >
               Analyze Your Mood
             </Button>
@@ -167,41 +166,41 @@ const MoodHistory = () => {
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 animate-fade-in px-4 sm:px-6">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sarang-purple dark:text-sarang-periwinkle transition-colors duration-300">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
           My Mood Journey
         </h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-4 transition-colors duration-300">
+        <p className="text-sarang-brown max-w-2xl mx-auto px-4 transition-colors duration-300 font-['Montserrat']">
           Track your emotional wellness and see how music therapy is helping you over time
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+        <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardContent className="pt-4 sm:pt-6 px-0">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-sarang-lavender dark:bg-sarang-periwinkle/20 rounded-full transition-colors duration-300">
-                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-sarang-purple dark:text-sarang-periwinkle transition-colors duration-300" />
+              <div className="p-3 bg-sarang-coral rounded-full transition-colors duration-300">
+                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-colors duration-300" />
               </div>
               <div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">
+                <div className="text-xl sm:text-2xl font-bold text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
                   {averageMood > 0 ? '+' : ''}{averageMood.toFixed(2)}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Average Mood</div>
+                <div className="text-sm text-sarang-brown transition-colors duration-300 font-['Montserrat'] font-semibold">Average Mood</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+        <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardContent className="pt-4 sm:pt-6 px-0">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-sarang-periwinkle dark:bg-sarang-lavender/20 rounded-full transition-colors duration-300">
-                <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-sarang-purple dark:text-sarang-periwinkle transition-colors duration-300" />
+              <div className="p-3 bg-sarang-navy rounded-full transition-colors duration-300">
+                <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-colors duration-300" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-gray-800">{totalSessions}</div>
-                <div className="text-sm text-gray-600">Therapy Sessions</div>
+                <div className="text-2xl font-bold text-sarang-charcoal font-['Montserrat']">{totalSessions}</div>
+                <div className="text-sm text-sarang-brown font-['Montserrat'] font-semibold">Therapy Sessions</div>
               </div>
             </div>
           </CardContent>
@@ -215,7 +214,7 @@ const MoodHistory = () => {
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-800">{totalSongs}</div>
-                <div className="text-sm text-gray-600">Songs Recommended</div>
+                <div className="text-sm text-gray-600 font-semibold">Songs Recommended</div>
               </div>
             </div>
           </CardContent>
@@ -279,7 +278,7 @@ const MoodHistory = () => {
             <HeadphonesIcon className="w-5 h-5 text-sarang-purple" />
             <span>Recent Sessions</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-semibold">
             Your latest mood therapy sessions
           </CardDescription>
         </CardHeader>
@@ -292,7 +291,7 @@ const MoodHistory = () => {
                     <Badge className={getMoodColor(entry.sentimentScore)}>
                       {entry.moodLabel}
                     </Badge>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-gray-500 font-semibold">
                       {new Date(entry.date).toLocaleDateString('en-US', { 
                         weekday: 'long', 
                         year: 'numeric', 
@@ -301,10 +300,10 @@ const MoodHistory = () => {
                       })}
                     </span>
                   </div>
-                  <p className="text-gray-700 text-sm">
+                  <p className="text-gray-700 text-sm font-semibold">
                     "{entry.inputText}"
                   </p>
-                  <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                  <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500 font-semibold">
                     <span>Score: {entry.sentimentScore.toFixed(2)}</span>
                     <span>•</span>
                     <span>{entry.songsCount || 0} songs recommended</span>
@@ -314,7 +313,7 @@ const MoodHistory = () => {
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="border-sarang-lavender text-sarang-purple hover:bg-sarang-lavender/20"
+                    className="bg-[#213447] hover:bg-[#213447]/90 text-white border-[#213447]"
                     onClick={() => {
                       const playlist = getPlaylistForMood(entry.id);
                       if (playlist) {
@@ -338,7 +337,7 @@ const MoodHistory = () => {
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="border-gray-300 text-gray-500 cursor-not-allowed"
+                    className="bg-[#213447] hover:bg-[#213447]/90 text-white border-[#213447]"
                     disabled
                   >
                     No Playlist

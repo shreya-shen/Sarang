@@ -80,26 +80,62 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* High-quality image rendering */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
+    -ms-interpolation-mode: bicubic;
+  }
+
+  /* Specific hero image optimization */
+  .hero-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimizeQuality;
+    image-rendering: high-quality;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 }
 
 @layer components {
   .gradient-bg {
-    background: linear-gradient(135deg, #FFF2E0 0%, #C0C9EE 50%, #A2AADB 100%);
+    background: #f0d9bc;
   }
 
   .dark .gradient-bg {
-    background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
+    background: #213447;
   }
   
   .mood-card {
-    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300;
+    background-color: #f0d9bc; /* sarang-cream */
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(78, 87, 91, 0.3); /* sarang-gray with 30% opacity */
+    border-radius: 0.75rem; /* rounded-xl */
+    padding: 1rem; /* p-4 */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .mood-card:hover {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-xl */
+  }
+  
+  @media (min-width: 640px) {
+    .mood-card {
+      padding: 1.5rem; /* sm:p-6 */
+    }
   }
 }

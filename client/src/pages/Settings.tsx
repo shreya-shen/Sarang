@@ -355,49 +355,72 @@ const Settings = () => {
     <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in px-4 sm:px-6">
       {/* Header */}
       <div className="text-center space-y-4">
-        {isSignedIn && (
-          <div className="bg-gradient-to-r from-sarang-purple/10 to-sarang-periwinkle/10 dark:from-sarang-purple/20 dark:to-sarang-periwinkle/20 rounded-lg p-4 mb-6 transition-colors duration-300">
+        {isSignedIn ? (
+          <div className="bg-sarang-coral border-2 border-black rounded-lg p-4 mb-6 transition-colors duration-300">
             {profileLoading ? (
               <div className="flex items-center justify-center space-x-3">
-                <div className="bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 rounded-full w-12 h-12 flex items-center justify-center transition-colors duration-300">
-                  <User className="w-6 h-6" />
+                <div className="bg-black/20 text-black rounded-full w-12 h-12 flex items-center justify-center transition-colors duration-300">
+                  <User className="w-6 h-6 text-black" />
                 </div>
-                <div className="text-left">
-                  <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-24 mb-2 animate-pulse transition-colors duration-300"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-32 animate-pulse transition-colors duration-300"></div>
+                <div className="text-left flex-1 min-w-0">
+                  <div className="h-5 bg-black/20 rounded w-24 mb-2 animate-pulse transition-colors duration-300"></div>
+                  <div className="h-4 bg-black/20 rounded w-32 animate-pulse transition-colors duration-300"></div>
                 </div>
               </div>
             ) : (
               <div className="flex items-center justify-center space-x-3">
-                <div className="bg-sarang-purple dark:bg-sarang-periwinkle text-white dark:text-gray-900 rounded-full w-12 h-12 flex items-center justify-center transition-colors duration-300">
-                  <User className="w-6 h-6" />
+                <div className="bg-black/20 text-black rounded-full w-12 h-12 flex items-center justify-center transition-colors duration-300">
+                  <User className="w-6 h-6 text-black" />
                 </div>
-                <div className="text-left">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 transition-colors duration-300">
+                <div className="text-left flex-1 min-w-0">
+                  <h2 className="text-xl font-bold text-black transition-colors duration-300 font-['Montserrat']">
                     {profileData.name || user?.fullName || 'User'}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                  <p className="text-sm text-black font-semibold transition-colors duration-300 font-['Montserrat'] break-words overflow-wrap-anywhere">
                     {profileData.email || user?.primaryEmailAddress?.emailAddress || 'No email set'}
                   </p>
                 </div>
               </div>
             )}
           </div>
+        ) : (
+          <div className="bg-transparent border-2 border-black rounded-lg p-4 mb-6 transition-colors duration-300">
+            <div className="flex items-center justify-center space-x-3">
+              <div className="bg-sarang-coral text-black rounded-full w-12 h-12 flex items-center justify-center transition-colors duration-300">
+                <User className="w-6 h-6 text-black" />
+              </div>
+              <div className="text-left">
+                <h2 className="text-xl font-bold text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
+                  Sign In Required
+                </h2>
+                <p className="text-sm text-sarang-brown font-semibold transition-colors duration-300 font-['Montserrat']">
+                  Please sign in to access your profile and settings
+                </p>
+              </div>
+              <Button 
+                onClick={() => window.location.href = '/auth'}
+                style={{ backgroundColor: '#d76e72', color: 'black' }}
+                className="ml-4 hover:bg-opacity-90 font-['Montserrat'] font-bold"
+              >
+                Sign In
+              </Button>
+            </div>
+          </div>
         )}
         
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sarang-purple dark:text-sarang-periwinkle transition-colors duration-300">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
           Profile & Settings
         </h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-4 transition-colors duration-300">
+        <p className="text-sarang-brown max-w-2xl mx-auto px-4 transition-colors duration-300 font-['Montserrat'] font-semibold">
           Manage your profile information, preferences, and music integrations
         </p>
       </div>
 
       {/* Profile Section */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="bg-transparent backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="px-0 sm:px-6">
-          <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white transition-colors duration-300">
-            <User className="w-5 h-5 text-sarang-purple dark:text-sarang-periwinkle" />
+          <CardTitle className="flex items-center space-x-2 text-black transition-colors duration-300 font-['Montserrat'] font-bold">
+            <User className="w-5 h-5 text-black" />
             <span>
               {isSignedIn && (profileData.name || user?.fullName) 
                 ? `${profileData.name || user?.fullName}'s Profile` 
@@ -405,7 +428,7 @@ const Settings = () => {
               }
             </span>
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+          <CardDescription className="text-black transition-colors duration-300 font-['Montserrat'] font-semibold">
             Your account information and preferences
           </CardDescription>
         </CardHeader>
@@ -421,7 +444,8 @@ const Settings = () => {
                       value={tempProfileData.name}
                       onChange={(e) => setTempProfileData(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Enter your username or display name"
-                      className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                      style={{ backgroundColor: '#d76e72', color: 'black', borderColor: 'black' }}
+                      className="font-semibold placeholder:text-black/70"
                     />
                   </div>
                   <div className="space-y-2">
@@ -432,14 +456,16 @@ const Settings = () => {
                       onChange={(e) => setTempProfileData(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="Enter your email"
                       type="email"
-                      className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                      style={{ backgroundColor: '#d76e72', color: 'black', borderColor: 'black' }}
+                      className="font-semibold placeholder:text-black/70"
                     />
                   </div>
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                     <Button 
                       onClick={handleProfileSave}
                       disabled={loading}
-                      className="bg-sarang-purple hover:bg-sarang-purple/90 dark:bg-sarang-periwinkle dark:hover:bg-sarang-periwinkle/90 dark:text-gray-900"
+                      style={{ backgroundColor: '#d76e72', color: 'black' }}
+                      className="hover:bg-opacity-90"
                     >
                       <Save className="w-4 h-4 mr-2" />
                       Save
@@ -448,7 +474,8 @@ const Settings = () => {
                       variant="outline"
                       onClick={handleProfileCancel}
                       disabled={loading}
-                      className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      style={{ backgroundColor: '#d76e72', color: 'black', borderColor: '#d76e72' }}
+                      className="hover:bg-opacity-90"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Cancel
@@ -459,14 +486,14 @@ const Settings = () => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <h3 className="font-medium text-gray-800">Username</h3>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="font-bold text-black font-['Montserrat']">Username</h3>
+                      <p className="text-sm text-black font-semibold font-['Montserrat']">
                         {profileData.name || "Not set"}
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <h3 className="font-medium text-gray-800">Email</h3>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="font-bold text-black font-['Montserrat']">Email</h3>
+                      <p className="text-sm text-black font-semibold font-['Montserrat']">
                         {profileData.email || "Not set"}
                       </p>
                     </div>
@@ -474,14 +501,14 @@ const Settings = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <h3 className="font-medium text-gray-800">Account Status</h3>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="font-bold text-black font-['Montserrat']">Account Status</h3>
+                      <p className="text-sm text-black font-semibold font-['Montserrat']">
                         Active - Signed in with Clerk
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <h3 className="font-medium text-gray-800">Member Since</h3>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="font-bold text-black font-['Montserrat']">Member Since</h3>
+                      <p className="text-sm text-black font-semibold font-['Montserrat']">
                         {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recently'}
                       </p>
                     </div>
@@ -491,7 +518,8 @@ const Settings = () => {
                     <Button 
                       variant="outline"
                       onClick={handleProfileEdit}
-                      className="border-sarang-purple text-sarang-purple hover:bg-sarang-purple hover:text-white"
+                      style={{ backgroundColor: '#d76e72', color: 'black', borderColor: '#d76e72' }}
+                      className="hover:bg-opacity-90 font-['Montserrat']"
                     >
                       <Edit className="w-4 h-4 mr-2" />
                       Edit Profile
@@ -500,16 +528,20 @@ const Settings = () => {
                 </div>
               )}
               
-              <Separator />
+              <Separator className="bg-black" />
               
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-gray-800">Daily Mood Reminders</h3>
-                  <p className="text-sm text-gray-600">Get gentle reminders to check in with your mood</p>
+                  <h3 className="font-bold text-black font-['Montserrat']">Daily Mood Reminders</h3>
+                  <p className="text-sm text-black font-['Montserrat'] font-semibold">Get gentle reminders to check in with your mood</p>
                 </div>
                 <Switch
                   checked={notifications}
                   onCheckedChange={setNotifications}
+                  style={{ 
+                    '--switch-bg': '#d76e72',
+                    '--switch-thumb-bg': 'black'
+                  } as React.CSSProperties}
                 />
               </div>
             </div>
@@ -522,7 +554,8 @@ const Settings = () => {
               </p>
               <Button 
                 onClick={() => window.location.href = '/auth'}
-                className="bg-sarang-purple hover:bg-sarang-purple/90"
+                style={{ backgroundColor: '#d76e72', color: 'black' }}
+                className="hover:bg-opacity-90"
               >
                 Sign In / Sign Up
               </Button>
@@ -532,13 +565,13 @@ const Settings = () => {
       </Card>
 
       {/* Spotify Integration */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="px-0 sm:px-6">
-          <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white transition-colors duration-300">
-            <Music className="w-5 h-5 text-sarang-purple dark:text-sarang-periwinkle" />
+          <CardTitle className="flex items-center space-x-2 text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
+            <Music className="w-5 h-5 text-black" />
             <span>Spotify Integration</span>
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+          <CardDescription className="text-sarang-brown transition-colors duration-300 font-['Montserrat']">
             Connect your Spotify account for enhanced music therapy experience
           </CardDescription>
         </CardHeader>
@@ -546,20 +579,24 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-2">
-                <h3 className="font-medium text-gray-800">Spotify Account</h3>
+                <h3 className="font-medium text-sarang-charcoal font-['Montserrat']">Spotify Account</h3>
                 {spotifyConnected ? (
                   <Badge className="bg-green-100 text-green-800 border-green-200">
                     Connected
                   </Badge>
                 ) : (
-                  <Badge variant="secondary">Not Connected</Badge>
+                  <Badge className="bg-red-100 text-red-800 border-red-200">Not Connected</Badge>
                 )}
               </div>
             </div>
             <Button
               onClick={handleSpotifyConnect}
               variant={spotifyConnected ? "outline" : "default"}
-              className={spotifyConnected ? "border-red-200 text-red-600 hover:bg-red-50" : "bg-sarang-purple hover:bg-sarang-purple/90"}
+              className={spotifyConnected ? "font-['Montserrat'] hover:bg-opacity-90" : "font-['Montserrat'] hover:bg-opacity-90"}
+              style={spotifyConnected 
+                ? { backgroundColor: '#d76e72', color: 'black', borderColor: '#d76e72' }
+                : { backgroundColor: '#d76e72', color: 'black' }
+              }
               disabled={spotifyLoading}
             >
               {spotifyLoading ? (
@@ -640,7 +677,8 @@ const Settings = () => {
                       onClick={handleRevokeTopTracksPermission}
                       variant="outline"
                       size="sm"
-                      className="border-red-200 text-red-600 hover:bg-red-50"
+                      style={{ backgroundColor: '#d76e72', color: 'black', borderColor: '#d76e72' }}
+                      className="hover:bg-opacity-90"
                       disabled={topTracksLoading}
                     >
                       {topTracksLoading ? (
@@ -671,7 +709,8 @@ const Settings = () => {
                       onClick={handleGrantTopTracksPermission}
                       variant="outline"
                       size="sm"
-                      className="border-blue-200 text-blue-600 hover:bg-blue-50"
+                      style={{ backgroundColor: '#d76e72', color: 'black', borderColor: '#d76e72' }}
+                      className="hover:bg-opacity-90"
                       disabled={topTracksLoading}
                     >
                       {topTracksLoading ? (
@@ -691,12 +730,16 @@ const Settings = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium text-gray-800">Auto-Export Playlists</h3>
-                    <p className="text-sm text-gray-600">Automatically save Sarang playlists to your Spotify</p>
+                    <h3 className="font-bold text-black font-['Montserrat']">Auto-Export Playlists</h3>
+                    <p className="text-sm text-black font-['Montserrat'] font-semibold">Automatically save Sarang playlists to your Spotify</p>
                   </div>
                   <Switch
                     checked={autoExport}
                     onCheckedChange={setAutoExport}
+                    style={{ 
+                      '--switch-bg': '#d76e72',
+                      '--switch-thumb-bg': 'black'
+                    } as React.CSSProperties}
                   />
                 </div>
               </div>
@@ -704,9 +747,9 @@ const Settings = () => {
           )}
 
           {!spotifyConnected && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-2">Why connect Spotify?</h4>
-              <ul className="text-sm text-blue-800 space-y-1">
+            <div className="bg-sarang-coral backdrop-blur-sm border-2 border-black rounded-lg p-4">
+              <h4 className="font-bold text-black mb-2 font-['Montserrat']">Why connect Spotify?</h4>
+              <ul className="text-sm text-black space-y-1 font-['Montserrat'] font-semibold">
                 <li>• Access your top tracks for personalized recommendations</li>
                 <li>• Export Sarang playlists directly to your account</li>
                 <li>• Play songs directly within the app</li>
@@ -718,26 +761,27 @@ const Settings = () => {
       </Card>
 
       {/* Data & Privacy */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="bg-transparent backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="px-0 sm:px-6">
-          <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white transition-colors duration-300">
-            <Download className="w-5 h-5 text-sarang-purple dark:text-sarang-periwinkle" />
+          <CardTitle className="flex items-center space-x-2 text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
+            <Download className="w-5 h-5 text-black" />
             <span>Data & Privacy</span>
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+          <CardDescription className="text-sarang-brown transition-colors duration-300 font-['Montserrat']">
             Manage your data and privacy settings
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-medium text-gray-800">Export My Data</h3>
-              <p className="text-sm text-gray-600">Download all your mood logs and playlist history</p>
+              <h3 className="font-bold text-sarang-charcoal font-['Montserrat']">Export My Data</h3>
+              <p className="text-sm text-sarang-brown font-['Montserrat'] font-semibold">Download all your mood logs and playlist history</p>
             </div>
             <Button
               onClick={handleExportData}
               variant="outline"
-              className="border-sarang-lavender text-sarang-purple hover:bg-sarang-lavender/20"
+              style={{ backgroundColor: '#d76e72', color: 'black' }}
+              className="hover:bg-opacity-90 font-['Montserrat'] border-black"
             >
               <Download className="w-4 h-4 mr-2" />
               Export
@@ -747,18 +791,18 @@ const Settings = () => {
           <Separator />
 
           <div className="space-y-4">
-            <h3 className="font-medium text-gray-800">Privacy Preferences</h3>
-            <div className="space-y-3 text-sm text-gray-600">
+            <h3 className="font-bold text-sarang-charcoal font-['Montserrat']">Privacy Preferences</h3>
+            <div className="space-y-3 text-sm text-sarang-brown font-['Montserrat'] font-semibold">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-sarang-coral rounded-full"></div>
                 <span>Your mood data is encrypted and stored securely</span>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-sarang-navy rounded-full"></div>
                 <span>We never share your personal information with third parties</span>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-sarang-brown rounded-full"></div>
                 <span>All AI analysis is processed anonymously</span>
               </div>
             </div>
@@ -767,19 +811,27 @@ const Settings = () => {
       </Card>
 
       {/* Support */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="bg-transparent backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="px-0 sm:px-6">
-          <CardTitle className="text-gray-900 dark:text-white transition-colors duration-300">Need Help?</CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+          <CardTitle className="text-sarang-charcoal transition-colors duration-300 font-['Montserrat'] font-bold">Need Help?</CardTitle>
+          <CardDescription className="text-sarang-brown transition-colors duration-300 font-['Montserrat'] font-semibold">
             Get support or learn more about Sarang
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 px-0 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button variant="outline" className="border-sarang-lavender text-sarang-purple hover:bg-sarang-lavender/20">
+            <Button 
+              variant="outline" 
+              style={{ backgroundColor: '#d76e72', color: 'black' }}
+              className="hover:bg-opacity-90 font-['Montserrat'] border-black"
+            >
               Contact Support
             </Button>
-            <Button variant="outline" className="border-sarang-lavender text-sarang-purple hover:bg-sarang-lavender/20">
+            <Button 
+              variant="outline" 
+              style={{ backgroundColor: '#d76e72', color: 'black' }}
+              className="hover:bg-opacity-90 font-['Montserrat'] border-black"
+            >
               View Tutorial
             </Button>
           </div>

@@ -185,7 +185,7 @@ const SpotifyPlayer: React.FC<SpotifyPlayerProps> = ({
             <Button
               onClick={handlePlayPause}
               disabled={loading || !isConnected}
-              className="bg-sarang-purple hover:bg-sarang-purple/90 dark:bg-sarang-periwinkle dark:hover:bg-sarang-periwinkle/90 dark:text-gray-900 transition-colors duration-300"
+              className="bg-[#213447] hover:bg-[#213447]/90 text-white transition-colors duration-300"
             >
               {loading ? (
                 <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin border-2 border-white border-t-transparent rounded-full" />

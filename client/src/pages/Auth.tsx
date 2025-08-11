@@ -142,7 +142,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background dark:bg-gray-900 flex transition-colors duration-300">
       {/* Left Side - Decorative Elements */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sarang-cream via-sarang-lavender to-sarang-periwinkle dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 p-8 xl:p-12 flex-col justify-center items-center relative overflow-hidden transition-colors duration-300">
+      <div className="hidden lg:flex lg:w-1/2 bg-sarang-warm-cream dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 p-8 xl:p-12 flex-col justify-center items-center relative overflow-hidden transition-colors duration-300">
         <div className="absolute inset-0 bg-black/5 dark:bg-black/20 transition-colors duration-300"></div>
         
         {/* Decorative Audio Devices - Similar to your original design */}
@@ -185,15 +185,15 @@ const Auth = () => {
         <div className="relative z-10 text-center max-w-md">
           <h1 className="text-3xl xl:text-4xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
             Unleash Your{" "}
-            <span className="bg-gradient-to-r from-sarang-purple to-sarang-periwinkle bg-clip-text text-transparent">
+            <span className="text-black font-bold">
               Emotions
             </span>,<br />
             Ignite Your{" "}
-            <span className="bg-gradient-to-r from-sarang-periwinkle to-sarang-lavender bg-clip-text text-transparent">
+            <span className="text-black font-bold">
               Mind!
             </span>
           </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300">
+          <p className="text-lg text-black dark:text-black font-semibold">
             Introducing Sarang, the revolutionary music therapy app that redefines the way you experience emotional healing.
           </p>
         </div>
@@ -225,7 +225,7 @@ const Auth = () => {
           </div>
 
           {/* Auth Card */}
-          <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-0 shadow-xl">
+          <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black shadow-xl">
             <CardContent className="p-8 space-y-6">
               {!pendingVerification ? (
                 <>
@@ -233,10 +233,11 @@ const Auth = () => {
                   <Button
                     onClick={handleSpotifyAuth}
                     disabled={loading}
-                    className="w-full bg-[#1DB954] hover:bg-[#1ed760] text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl"
+                    className="w-full hover:bg-[#1ed760] text-black border-2 border-[#1DB954] py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl"
+                    style={{ backgroundColor: '#1DB954' }}
                   >
                     {loading ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
                     ) : (
                       <>
                         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
@@ -247,54 +248,51 @@ const Auth = () => {
                     )}
                   </Button>
 
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200 dark:border-gray-600"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or continue with email</span>
-                    </div>
+                  <div className="flex items-center">
+                    <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                    <span className="px-4 text-sm text-black font-bold">Or continue with email</span>
+                    <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
                   </div>
 
                   {/* Email Sign In */}
                   <form onSubmit={handleEmailAuth} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email</Label>
+                      <Label htmlFor="email" className="text-black font-bold">Email</Label>
                       <Input 
                         id="email" 
                         type="email" 
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border-gray-200 dark:border-gray-600 focus:border-sarang-purple focus:ring-sarang-purple dark:bg-gray-700 dark:text-white py-3"
+                        className="bg-transparent border-2 border-black text-black placeholder:text-black/60 focus:border-black focus:ring-black py-3"
                         disabled={loading}
                       />
                     </div>
                     
                     {isSignUp && (
                       <div className="space-y-2">
-                        <Label htmlFor="username" className="text-gray-700 dark:text-gray-300">Username</Label>
+                        <Label htmlFor="username" className="text-black font-bold">Username</Label>
                         <Input 
                           id="username" 
                           type="text" 
                           placeholder="Choose a username"
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
-                          className="border-gray-200 dark:border-gray-600 focus:border-sarang-purple focus:ring-sarang-purple dark:bg-gray-700 dark:text-white py-3"
+                          className="bg-transparent border-2 border-black text-black placeholder:text-black/60 focus:border-black focus:ring-black py-3"
                           disabled={loading}
                         />
                       </div>
                     )}
                     
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">Password</Label>
+                      <Label htmlFor="password" className="text-black font-bold">Password</Label>
                       <Input 
                         id="password" 
                         type="password" 
                         placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border-gray-200 dark:border-gray-600 focus:border-sarang-purple focus:ring-sarang-purple dark:bg-gray-700 dark:text-white py-3"
+                        className="bg-transparent border-2 border-black text-black placeholder:text-black/60 focus:border-black focus:ring-black py-3"
                         disabled={loading}
                       />
                     </div>
@@ -302,7 +300,7 @@ const Auth = () => {
                     <Button 
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-gradient-to-r from-sarang-purple to-sarang-periwinkle hover:from-sarang-purple/90 hover:to-sarang-periwinkle/90 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
+                      className="w-full bg-[#213447] hover:bg-[#213447]/90 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
                     >
                       {loading ? (
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -329,7 +327,7 @@ const Auth = () => {
 
                   <form onSubmit={handleVerifyEmail} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="verification-code" className="text-gray-700 dark:text-gray-300">
+                      <Label htmlFor="verification-code" className="text-black font-bold">
                         Verification Code
                       </Label>
                       <Input 
@@ -338,7 +336,7 @@ const Auth = () => {
                         placeholder="Enter 6-digit code"
                         value={verificationCode}
                         onChange={(e) => setVerificationCode(e.target.value)}
-                        className="border-gray-200 dark:border-gray-600 focus:border-sarang-purple focus:ring-sarang-purple dark:bg-gray-700 dark:text-white py-3 text-center text-lg tracking-widest"
+                        className="bg-transparent border-2 border-black text-black placeholder:text-black/60 focus:border-black focus:ring-black py-3 text-center text-lg tracking-widest"
                         disabled={loading}
                         maxLength={6}
                       />
@@ -347,7 +345,7 @@ const Auth = () => {
                     <Button 
                       type="submit"
                       disabled={loading || verificationCode.length !== 6}
-                      className="w-full bg-gradient-to-r from-sarang-purple to-sarang-periwinkle hover:from-sarang-purple/90 hover:to-sarang-periwinkle/90 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
+                      className="w-full bg-[#213447] hover:bg-[#213447]/90 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
                     >
                       {loading ? (
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -378,11 +376,11 @@ const Auth = () => {
               {!pendingVerification && (
                 /* Toggle Sign Up/Sign In */
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-black font-bold">
                     {isSignUp ? "Already have an account?" : "Don't have an account?"}
                     <button
                       onClick={handleToggleMode}
-                      className="ml-1 text-sarang-purple hover:text-sarang-purple/80 font-semibold transition-colors"
+                      className="ml-1 text-black hover:text-black/80 font-bold underline transition-colors"
                       disabled={loading}
                     >
                       {isSignUp ? "Sign In" : "Sign Up"}

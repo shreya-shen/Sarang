@@ -26,18 +26,19 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Layout>
-              <Routes>
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/sso-callback" element={<AuthenticateWithRedirectCallback />} />
-                <Route path="/" element={<Home />} />
-                <Route path="/recommendations" element={<Recommendations />} />
-                <Route path="/mood-history" element={<MoodHistory />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/about" element={<About />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
+            <Routes>
+              {/* Home page without layout/navbar */}
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/sso-callback" element={<AuthenticateWithRedirectCallback />} />
+              
+              {/* Other pages with layout/navbar */}
+              <Route path="/recommendations" element={<Layout><Recommendations /></Layout>} />
+              <Route path="/mood-history" element={<Layout><MoodHistory /></Layout>} />
+              <Route path="/settings" element={<Layout><Settings /></Layout>} />
+              <Route path="/about" element={<Layout><About /></Layout>} />
+              <Route path="*" element={<Layout><NotFound /></Layout>} />
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </AppProvider>

@@ -234,24 +234,24 @@ const Recommendations = () => {
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 animate-fade-in px-4 sm:px-6">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sarang-purple dark:text-sarang-periwinkle transition-colors duration-300">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
           Your Personalized Playlist
         </h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-4 transition-colors duration-300">
+        <p className="text-sarang-brown max-w-2xl mx-auto px-4 transition-colors duration-300 font-['Montserrat']">
           Based on your mood analysis, we've created a therapeutic playlist that gradually uplifts your spirits
         </p>
       </div>
 
       {/* Mood Summary */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="px-0 sm:px-6">
-          <CardTitle className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 text-gray-900 dark:text-white transition-colors duration-300">
+          <CardTitle className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">
             <span>Your Mood Analysis</span>
-            <Badge variant="secondary" className="bg-sarang-lavender dark:bg-sarang-periwinkle/20 text-sarang-purple dark:text-sarang-periwinkle w-fit">
+            <Badge variant="secondary" className="bg-sarang-coral text-white w-fit">
               {sentiment.label}
             </Badge>
           </CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+          <CardDescription className="text-sarang-brown transition-colors duration-300 font-['Montserrat']">
             "{moodText?.slice(0, 100)}..."
           </CardDescription>
         </CardHeader>
@@ -273,14 +273,14 @@ const Recommendations = () => {
 
       {/* Playlist */}
       {isLoading ? (
-        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-sarang-lavender/30 dark:border-gray-600 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+        <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardContent className="py-12 text-center px-0 sm:px-6">
             <div className="flex flex-col items-center space-y-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sarang-purple dark:border-sarang-periwinkle"></div>
-              <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">Curating your perfect playlist...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sarang-coral"></div>
+              <p className="text-sarang-brown transition-colors duration-300 font-['Montserrat']">Curating your perfect playlist...</p>
               {hasPersonalization && (
-                <div className="bg-sarang-purple/10 border border-sarang-purple/20 rounded-lg p-3 mt-4">
-                  <p className="text-sm text-sarang-purple font-medium">
+                <div className="bg-sarang-coral/10 border border-sarang-coral/20 rounded-lg p-3 mt-4">
+                  <p className="text-sm text-sarang-coral font-medium font-['Montserrat']">
                     ✨ We are using your top played tracks to provide an enhanced experience for the playlist generation.
                   </p>
                 </div>
@@ -306,7 +306,7 @@ const Recommendations = () => {
               <Button
                 onClick={exportToSpotify}
                 disabled={isExportingPlaylist || !spotifyConnected}
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-[#213447] hover:bg-[#213447]/90 text-white"
               >
                 {isExportingPlaylist ? (
                   <>
@@ -345,7 +345,7 @@ const Recommendations = () => {
                       </div>
                       <Button
                         size="sm"
-                        className="bg-sarang-purple hover:bg-sarang-purple/90"
+                        className="bg-[#213447] hover:bg-[#213447]/90 text-white"
                         onClick={(e) => {
                           e.stopPropagation();
                           setCurrentTrackIndex(index);
