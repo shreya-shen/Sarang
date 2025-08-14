@@ -130,7 +130,7 @@ const Recommendations = () => {
       toast.error("Failed to generate playlist. Please try again.");
       setIsLoading(false);
       
-      // Fallback to mock data
+      // Fallback data
       const mockSongs: Song[] = [
         { trackName: "Khamaaj", artistName: "Shafqat Amanat Ali", valence: 0.22, energy: 0.35 },
         { trackName: "Breathe Me", artistName: "Sia", valence: 0.28, energy: 0.40 },
@@ -259,12 +259,17 @@ const Recommendations = () => {
           <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <div className="flex-1">
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1 transition-colors duration-300">
-                <span>Sentiment Score</span>
-                <span>{sentiment.score.toFixed(2)}</span>
+                <span className="text-black font-semibold">Sentiment Score</span>
+                <span className="text-black font-semibold">{sentiment.score.toFixed(2)}</span>
               </div>
-              <Progress value={(sentiment.score + 1) * 50} className="h-2 bg-gray-200 dark:bg-gray-600" />
+              <div className="w-full bg-white h-2 rounded-full border border-gray-300">
+                <div 
+                  className="bg-gray-700 h-full rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${(sentiment.score + 1) * 50}%` }}
+                ></div>
+              </div>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
+            <div className="text-sm text-gray-900 dark:text-black font-semibold transition-colors duration-300">
               {Math.round(sentiment.confidence * 100)}% confidence
             </div>
           </div>
@@ -298,7 +303,7 @@ const Recommendations = () => {
                   Recommended Songs
                 </h2>
                 {hasPersonalization && (
-                  <p className="text-sm text-sarang-purple mt-1">
+                  <p className="text-sm text-sarang-charcoal mt-1">
                     ✨ Personalized using your top played tracks
                   </p>
                 )}
@@ -324,28 +329,31 @@ const Recommendations = () => {
 
             {/* Existing playlist cards */}
             {playlist.map((song, index) => (
-              <Card key={index} className="mood-card hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setCurrentTrackIndex(index)}>
+              <Card key={index} className="bg-[#df6e71] border-2 border-black rounded-xl hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setCurrentTrackIndex(index)}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3">
-                        <div className="bg-sarang-purple/20 rounded-full p-2">
-                          <Music className="w-4 h-4 text-sarang-purple" />
+                        <div className="bg-black/10 rounded-full p-2">
+                          <Music className="w-4 h-4 text-black" />
                         </div>
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{song.trackName}</h3>
-                          <p className="text-gray-600">{song.artistName}</p>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-2xl">{getMoodEmoji(song.valence)}</span>
+                          <div>
+                            <h3 className="font-bold text-black">{song.trackName}</h3>
+                            <p className="font-bold text-black/80">{song.artistName}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="text-right">
-                        <div className="text-sm text-gray-500">Valence: {song.valence.toFixed(2)}</div>
-                        <div className="text-sm text-gray-500">Energy: {song.energy.toFixed(2)}</div>
+                        <div className="text-sm font-bold text-black/70">Valence: {song.valence.toFixed(2)}</div>
+                        <div className="text-sm font-bold text-black/70">Energy: {song.energy.toFixed(2)}</div>
                       </div>
                       <Button
                         size="sm"
-                        className="bg-[#213447] hover:bg-[#213447]/90 text-white"
+                        className="bg-[#213447] hover:bg-[#213447]/90 text-white font-bold"
                         onClick={(e) => {
                           e.stopPropagation();
                           setCurrentTrackIndex(index);
@@ -362,39 +370,47 @@ const Recommendations = () => {
 
           {/* Spotify Player */}
           <div className="lg:sticky lg:top-8 lg:h-fit">
-            <SpotifyPlayer
-              tracks={normalizedTracks}
-              currentTrackIndex={currentTrackIndex}
-              onTrackChange={setCurrentTrackIndex}
-              isConnected={spotifyConnected}
-              onConnectRequest={handleConnectSpotify}
-            />
+            <div className="bg-[#304057] border-2 border-black rounded-xl p-4">
+              <SpotifyPlayer
+                tracks={normalizedTracks}
+                currentTrackIndex={currentTrackIndex}
+                onTrackChange={setCurrentTrackIndex}
+                isConnected={spotifyConnected}
+                onConnectRequest={handleConnectSpotify}
+                controlButtonColor="#f9b748"
+                iconColor="black"
+                connectButtonColor="#1DB954"
+                showSpotifyLogo={true}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Uplift Visualization */}
-      <Card className="mood-card">
+      <Card className="mood-card bg-[#23354d]">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <ArrowUp className="w-5 h-5 text-sarang-purple" />
-            <span>Mood Journey</span>
+            <ArrowUp className="w-5 h-5 text-white" />
+            <span className="font-semibold text-white">Mood Journey</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-semibold text-white">
             Watch how this playlist gradually uplifts your mood using music therapy principles
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex justify-between text-sm text-gray-600">
+            <div className="flex justify-between text-sm font-semibold text-white">
               <span>Starting Mood: {Math.round(playlist[0]?.valence * 100)}% Joy</span>
               <span>Ending Mood: {Math.round(playlist[playlist.length - 1]?.valence * 100)}% Joy</span>
             </div>
-            <Progress 
-              value={((playlist[playlist.length - 1]?.valence - playlist[0]?.valence) + 1) * 50} 
-              className="h-4"
-            />
-            <p className="text-sm text-gray-600 text-center">
+            <div className="w-full bg-white h-4 rounded-full border border-gray-300">
+              <div 
+                className="bg-gray-700 h-full rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${((playlist[playlist.length - 1]?.valence - playlist[0]?.valence) + 1) * 50}%` }}
+              ></div>
+            </div>
+            <p className="text-sm font-semibold text-white text-center">
               This playlist increases your joy level by {Math.round((playlist[playlist.length - 1]?.valence - playlist[0]?.valence) * 100)}%
             </p>
           </div>

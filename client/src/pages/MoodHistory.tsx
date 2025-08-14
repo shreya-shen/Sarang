@@ -113,7 +113,7 @@ const MoodHistory = () => {
     return (
       <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
         <div className="text-center space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-sarang-purple">
+          <h1 className="text-3xl md:text-4xl font-bold text-sarang-charcoal font-['Montserrat']">
             My Mood Journey
           </h1>
           <div className="flex justify-center">
@@ -137,18 +137,18 @@ const MoodHistory = () => {
           </p>
         </div>
         
-        <Card className="bg-transparent border-2 border-black rounded-xl text-center py-16">
+        <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl text-center py-16 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardContent>
-            <HeadphonesIcon className="h-16 w-16 text-sarang-lavender mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <HeadphonesIcon className="h-16 w-16 text-sarang-gray mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-sarang-charcoal mb-2 font-['Montserrat']">
               Your history will appear here
             </h3>
-            <p className="text-gray-600 mb-6 font-semibold">
+            <p className="text-sarang-brown mb-6 font-semibold font-['Montserrat']">
               Start by analyzing your mood to see your journey unfold
             </p>
             <Button 
               onClick={() => navigate("/")}
-              className="bg-[#213447] hover:bg-[#213447]/90 text-white"
+              className="bg-sarang-navy hover:bg-sarang-navy/90 text-white font-['Montserrat']"
             >
               Analyze Your Mood
             </Button>
@@ -206,15 +206,15 @@ const MoodHistory = () => {
           </CardContent>
         </Card>
 
-        <Card className="mood-card">
-          <CardContent className="pt-6">
+        <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardContent className="pt-4 sm:pt-6 px-0">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-sarang-purple rounded-full">
-                <Music className="h-6 w-6 text-white" />
+              <div className="p-3 bg-sarang-gray rounded-full transition-colors duration-300">
+                <Music className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-colors duration-300" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-gray-800">{totalSongs}</div>
-                <div className="text-sm text-gray-600 font-semibold">Songs Recommended</div>
+                <div className="text-xl sm:text-2xl font-bold text-sarang-charcoal transition-colors duration-300 font-['Montserrat']">{totalSongs}</div>
+                <div className="text-sm text-sarang-brown transition-colors duration-300 font-['Montserrat'] font-semibold">Songs Recommended</div>
               </div>
             </div>
           </CardContent>
@@ -222,13 +222,13 @@ const MoodHistory = () => {
       </div>
 
       {/* Mood Chart */}
-      <Card className="mood-card">
+      <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="w-5 h-5 text-sarang-purple" />
+          <CardTitle className="flex items-center space-x-2 text-sarang-charcoal font-['Montserrat']">
+            <TrendingUp className="w-5 h-5 text-sarang-coral" />
             <span>Mood Trend</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sarang-brown font-['Montserrat']">
             Your emotional journey over the past week
           </CardDescription>
         </CardHeader>
@@ -236,34 +236,37 @@ const MoodHistory = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#C0C9EE" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#6d504d" opacity={0.3} />
                 <XAxis 
                   dataKey="date" 
-                  stroke="#898AC4"
+                  stroke="#4e575b"
                   fontSize={12}
+                  fontFamily="Montserrat"
                 />
                 <YAxis 
                   domain={[-1, 1]}
-                  stroke="#898AC4"
+                  stroke="#4e575b"
                   fontSize={12}
+                  fontFamily="Montserrat"
                   tickFormatter={(value) => value.toFixed(1)}
                 />
                 <Tooltip 
                   formatter={(value: number, name) => [value.toFixed(2), 'Mood Score']}
                   labelFormatter={(label) => `Date: ${label}`}
                   contentStyle={{
-                    backgroundColor: '#FFF2E0',
-                    border: '1px solid #C0C9EE',
-                    borderRadius: '8px'
+                    backgroundColor: '#f0d9bc',
+                    border: '2px solid #130f10',
+                    borderRadius: '12px',
+                    fontFamily: 'Montserrat'
                   }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="mood" 
-                  stroke="#898AC4" 
+                  stroke="#d76e72" 
                   strokeWidth={3}
-                  dot={{ fill: '#898AC4', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, fill: '#A2AADB' }}
+                  dot={{ fill: '#d76e72', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, fill: '#213447' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -272,26 +275,26 @@ const MoodHistory = () => {
       </Card>
 
       {/* Recent Sessions */}
-      <Card className="mood-card">
+      <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <HeadphonesIcon className="w-5 h-5 text-sarang-purple" />
+          <CardTitle className="flex items-center space-x-2 text-sarang-charcoal font-['Montserrat']">
+            <HeadphonesIcon className="w-5 h-5 text-sarang-coral" />
             <span>Recent Sessions</span>
           </CardTitle>
-          <CardDescription className="font-semibold">
+          <CardDescription className="font-semibold text-sarang-brown font-['Montserrat']">
             Your latest mood therapy sessions
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {moodHistory.slice(-5).reverse().map((entry) => (
-              <div key={entry.id} className="flex items-center justify-between p-4 bg-white/50 rounded-lg border border-sarang-lavender/30">
+              <div key={entry.id} className="flex items-center justify-between p-4 bg-white/50 rounded-lg border-2 border-sarang-gray/30 hover:border-sarang-coral/50 transition-all duration-200">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
                     <Badge className={getMoodColor(entry.sentimentScore)}>
                       {entry.moodLabel}
                     </Badge>
-                    <span className="text-sm text-gray-500 font-semibold">
+                    <span className="text-sm text-sarang-brown font-semibold font-['Montserrat']">
                       {new Date(entry.date).toLocaleDateString('en-US', { 
                         weekday: 'long', 
                         year: 'numeric', 
@@ -300,10 +303,10 @@ const MoodHistory = () => {
                       })}
                     </span>
                   </div>
-                  <p className="text-gray-700 text-sm font-semibold">
+                  <p className="text-sarang-charcoal text-sm font-semibold font-['Montserrat']">
                     "{entry.inputText}"
                   </p>
-                  <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500 font-semibold">
+                  <div className="flex items-center space-x-4 mt-2 text-xs text-sarang-brown font-semibold font-['Montserrat']">
                     <span>Score: {entry.sentimentScore.toFixed(2)}</span>
                     <span>•</span>
                     <span>{entry.songsCount || 0} songs recommended</span>
@@ -313,7 +316,7 @@ const MoodHistory = () => {
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="bg-[#213447] hover:bg-[#213447]/90 text-white border-[#213447]"
+                    className="bg-sarang-navy hover:bg-sarang-navy/90 text-white border-sarang-navy font-['Montserrat']"
                     onClick={() => {
                       const playlist = getPlaylistForMood(entry.id);
                       if (playlist) {
@@ -337,7 +340,7 @@ const MoodHistory = () => {
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="bg-[#213447] hover:bg-[#213447]/90 text-white border-[#213447]"
+                    className="bg-sarang-navy hover:bg-sarang-navy/90 text-white border-sarang-navy font-['Montserrat']"
                     disabled
                   >
                     No Playlist
@@ -350,42 +353,42 @@ const MoodHistory = () => {
       </Card>
 
       {/* Insights */}
-      <Card className="mood-card">
+      <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle className="text-sarang-purple">Your Wellness Insights</CardTitle>
+          <CardTitle className="text-sarang-charcoal font-['Montserrat']">Your Wellness Insights</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold text-gray-800">Progress Highlights</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <h4 className="font-semibold text-sarang-charcoal font-['Montserrat']">Progress Highlights</h4>
+              <ul className="space-y-2 text-sm text-sarang-brown font-['Montserrat']">
                 <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-sarang-coral rounded-full"></div>
                   <span>Your mood has improved by 40% this week</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-sarang-navy rounded-full"></div>
                   <span>You've been consistent with daily sessions</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-sarang-gray rounded-full"></div>
                   <span>Music therapy is showing positive effects</span>
                 </li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold text-gray-800">Recommendations</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <h4 className="font-semibold text-sarang-charcoal font-['Montserrat']">Recommendations</h4>
+              <ul className="space-y-2 text-sm text-sarang-brown font-['Montserrat']">
                 <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-sarang-coral rounded-full"></div>
                   <span>Try morning sessions for better results</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-sarang-navy rounded-full"></div>
                   <span>Consider adding meditation between songs</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-sarang-gray rounded-full"></div>
                   <span>Share your progress with a wellness coach</span>
                 </li>
               </ul>

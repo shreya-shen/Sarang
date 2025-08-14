@@ -120,7 +120,7 @@
   }
   
   .mood-card {
-    background-color: #f0d9bc; /* sarang-cream */
+    background-color: #23354d; /* Updated to requested color */
     backdrop-filter: blur(4px);
     border: 1px solid rgba(78, 87, 91, 0.3); /* sarang-gray with 30% opacity */
     border-radius: 0.75rem; /* rounded-xl */

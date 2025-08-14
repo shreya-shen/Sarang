@@ -302,17 +302,13 @@ const Home = () => {
           <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">
             <div className="text-right space-y-6 max-w-md lg:max-w-lg z-10">
               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
-                MENTAL<br />
-                <span className="text-sarang-coral">
-                  HEALTH
-                </span>
+                SARANG<br />
               </h1>
               
               <p className="text-sm md:text-base lg:text-lg text-white/90 leading-relaxed drop-shadow-lg max-w-sm">
-                Lorem ipsum dolor sit amet consectetur 
-                adipiscing elit, sed diam nonummy nibh 
-                euismod tincidunt ut laoreet dolore 
-                aliquam erat volutpat.
+                Your personal music companion - blending science, emotion, and sound
+                to help you feel, heal, and thrive! Experience emotional healing through 
+                personalised soundscapes. 
               </p>
               
               <Button 
@@ -322,13 +318,6 @@ const Home = () => {
                 LEARN MORE
               </Button>
             </div>
-          </div>
-          
-          {/* Bottom Navigation Dots - Like in reference */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-            <div className="w-3 h-3 bg-white rounded-full"></div>
-            <div className="w-3 h-3 bg-white/50 rounded-full"></div>
-            <div className="w-3 h-3 bg-white/50 rounded-full"></div>
           </div>
         </div>
       </div>
