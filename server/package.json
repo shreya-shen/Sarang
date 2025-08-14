@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "start:services": "node start-services.js",
+    "start:production": "node start-production.js",
     "setup-ssl": "node generate-ssl.js",
     "setup-ssl-bash": "bash generate-ssl.sh",
     "setup-ssl-windows": "powershell -ExecutionPolicy Bypass -File generate-ssl.ps1",

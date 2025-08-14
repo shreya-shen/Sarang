@@ -1,5 +1,5 @@
 const supabase = require('../utils/supabase');
-const { analyzeSentiment } = require('../services/sentimentService');
+const { analyzeSentiment, clearCache } = require('../services/sentimentService');
 const { getOrCreateUserUUID } = require('../utils/userMapping');
 
 const logMood = async (req, res) => {
@@ -18,9 +18,15 @@ const logMood = async (req, res) => {
     let finalSentimentLabel = sentiment_label;
     
     if (!finalSentimentScore) {
+      console.log('🔍 Analyzing sentiment for text:', text);
       const sentimentData = await analyzeSentiment(text);
-      finalSentimentScore = sentimentData.score;
-      finalSentimentLabel = sentimentData.label;
+      console.log('📊 Sentiment analysis result:', sentimentData);
+      
+      // Handle both legacy and new response formats
+      finalSentimentScore = sentimentData.sentiment_score || sentimentData.score || 0;
+      finalSentimentLabel = sentimentData.primary_emotion || sentimentData.label || 'neutral';
+      
+      console.log('✅ Final sentiment - Score:', finalSentimentScore, 'Label:', finalSentimentLabel);
     }
 
     const { data, error } = await supabase.from('moods').insert([
@@ -76,33 +82,60 @@ const analyzeMoodSentiment = async (req, res) => {
   }
 
   try {
-    console.log('Analyzing sentiment for text:', text);
-    const sentimentScore = await analyzeSentiment(text);
-    console.log('Python sentiment score:', sentimentScore);
+    console.log('🤖 Analyzing sentiment with enhanced AI models for text:', text.substring(0, 100) + '...');
+    const sentimentResult = await analyzeSentiment(text);
     
-    // Convert sentiment score to normalized range and label
+    // Handle both simple score and detailed AI result
+    let sentimentScore, confidence, label;
+    
+    if (typeof sentimentResult === 'object' && sentimentResult.sentiment_score !== undefined) {
+      // Enhanced AI result with detailed analysis
+      sentimentScore = sentimentResult.sentiment_score;
+      confidence = sentimentResult.confidence || 0.8;
+      label = sentimentResult.primary_emotion || (sentimentScore > 0 ? "positive" : "negative");
+      
+      console.log('✅ Enhanced AI analysis result:', {
+        score: sentimentScore,
+        confidence: confidence,
+        emotion: label,
+        approach: sentimentResult.approach || 'Enhanced AI'
+      });
+    } else {
+      // Simple sentiment score - convert to detailed format
+      sentimentScore = typeof sentimentResult === 'number' ? sentimentResult : 0;
+      confidence = Math.min(0.95, 0.7 + Math.abs(sentimentScore) * 0.25);
+      
+      // Enhanced label mapping based on sentiment score
+      if (sentimentScore < -0.6) label = "Very Low";
+      else if (sentimentScore < -0.3) label = "Low";
+      else if (sentimentScore < -0.1) label = "Slightly Low";
+      else if (sentimentScore < 0.1) label = "Neutral";
+      else if (sentimentScore < 0.3) label = "Slightly Happy";
+      else if (sentimentScore < 0.6) label = "Happy";
+      else label = "Very Happy";
+      
+      console.log('✅ Standard sentiment analysis result:', sentimentScore);
+    }
+    
+    // Normalize score to ensure it's within bounds
     const normalizedScore = Math.max(-1, Math.min(1, sentimentScore));
     
-    let label;
-    if (normalizedScore < -0.5) label = "Low";
-    else if (normalizedScore < -0.1) label = "Calm";
-    else if (normalizedScore < 0.1) label = "Neutral";
-    else if (normalizedScore < 0.5) label = "Happy";
-    else label = "Excited";
-
-    const confidence = Math.min(0.95, 0.7 + Math.abs(normalizedScore) * 0.25);
-
     const result = {
       score: normalizedScore,
       label,
-      confidence: Math.round(confidence * 100) / 100
+      confidence: Math.round(confidence * 100) / 100,
+      enhanced_ai: typeof sentimentResult === 'object',
+      accuracy_level: typeof sentimentResult === 'object' ? "High (AI-First)" : "Standard"
     };
 
-    console.log('Sending sentiment result:', result);
+    console.log('📤 Sending enhanced sentiment result:', result);
     res.json(result);
   } catch (error) {
-    console.error('Sentiment analysis error:', error.message);
-    res.status(500).json({ error: 'Failed to analyze sentiment: ' + error.message });
+    console.error('❌ Enhanced sentiment analysis error:', error.message);
+    res.status(500).json({ 
+      error: 'Failed to analyze sentiment: ' + error.message,
+      fallback_available: true
+    });
   }
 };
 
@@ -129,4 +162,14 @@ const checkSchema = async (req, res) => {
   }
 };
 
-module.exports = { logMood, getMoodHistory, analyzeMoodSentiment, checkSchema };
+const clearSentimentCache = async (req, res) => {
+  try {
+    clearCache();
+    res.json({ success: true, message: 'Sentiment analysis cache cleared' });
+  } catch (error) {
+    console.error('Error clearing cache:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { logMood, getMoodHistory, analyzeMoodSentiment, checkSchema, clearSentimentCache };

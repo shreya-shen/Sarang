@@ -681,6 +681,83 @@ const searchTracks = async (userUUID, query, limit = 20) => {
   }
 };
 
+/**
+ * Get recommendations based on mood analysis
+ */
+const getRecommendationsForMood = async (userUUID, moodAnalysis, limit = 20) => {
+  try {
+    console.log('🎵 Getting recommendations for mood:', moodAnalysis.primary_emotion);
+    
+    const accessToken = await getValidAccessToken(userUUID);
+    spotifyApi.setAccessToken(accessToken);
+    
+    // Extract audio feature targets from mood analysis
+    const audioTargets = moodAnalysis.audio_targets || {};
+    
+    // Default seed genres based on emotion
+    const emotionGenres = {
+      'joy': ['pop', 'dance', 'funk'],
+      'excitement': ['electronic', 'dance', 'pop'],
+      'sadness': ['indie', 'acoustic', 'folk'],
+      'anger': ['rock', 'metal', 'punk'],
+      'fear': ['ambient', 'classical', 'chill'],
+      'love': ['r-n-b', 'soul', 'pop'],
+      'neutral': ['pop', 'indie', 'electronic'],
+      'optimism': ['pop', 'folk', 'indie'],
+      'stress': ['ambient', 'chill', 'electronic'],
+      'exhaustion': ['ambient', 'acoustic', 'chill']
+    };
+    
+    const seedGenres = emotionGenres[moodAnalysis.primary_emotion] || emotionGenres['neutral'];
+    
+    // Build recommendation parameters
+    const recommendationParams = {
+      limit,
+      seed_genres: seedGenres.slice(0, 3), // Spotify allows max 5 seeds total
+      target_valence: audioTargets.valence || 0.5,
+      target_energy: audioTargets.energy || 0.5,
+      target_danceability: audioTargets.danceability || 0.5,
+      target_acousticness: audioTargets.acousticness || 0.5,
+      min_popularity: 20, // Ensure we get reasonably popular tracks
+    };
+    
+    // Add tempo if available
+    if (audioTargets.tempo) {
+      recommendationParams.target_tempo = audioTargets.tempo;
+    }
+    
+    console.log('🎵 Recommendation parameters:', recommendationParams);
+    
+    const recommendations = await new Promise((resolve, reject) => {
+      spotifyApi.getRecommendations(recommendationParams, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+    
+    const tracks = recommendations.body.tracks.map(track => ({
+      id: track.id,
+      uri: track.uri,
+      name: track.name,
+      artists: track.artists,
+      album: track.album,
+      duration_ms: track.duration_ms,
+      popularity: track.popularity,
+      preview_url: track.preview_url,
+      external_urls: track.external_urls
+    }));
+    
+    console.log(`🎵 Generated ${tracks.length} mood-based recommendations`);
+    return tracks;
+  } catch (error) {
+    console.error('❌ Get mood recommendations error:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getSpotifyAuthUrl,
   handleCallbackExchange,
@@ -692,6 +769,7 @@ module.exports = {
   fetchUserTopTracks,
   getAudioFeatures,
   createPlaylistForMood,
+  getRecommendationsForMood,
   getUserDevices,
   hasActiveDevice,
   playTrack,
