@@ -1,0 +1,33 @@
+{
+  "name": "sarang-mood-music-app",
+  "version": "1.0.0",
+  "description": "A mood-based music recommendation app with AI sentiment analysis",
+  "main": "start-services.js",
+  "scripts": {
+    "start": "node start-services.js",
+    "dev": "nodemon start-services.js",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "music",
+    "mood",
+    "ai",
+    "sentiment-analysis",
+    "spotify",
+    "recommendation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

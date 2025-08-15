@@ -1,15 +1,11 @@
-nixpacks.toml
-[phases.setup]
-nixPkgs = ['nodejs_18', 'python311', 'python311Packages.pip']
+[build]
+builder = "NIXPACKS"
 
-[phases.install]
-cmds = [
-    'cd server && npm install',
-    'cd python && pip install -r requirements.txt'
-]
+[build.nixpacksConfigPath]
 
-[phases.build]
-cmds = ['echo "Build phase completed"']
+[deploy]
+startCommand = "node start-services.js"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
 
-[start]
-cmd = 'cd server && npm start'
+[environments.production.variables]
