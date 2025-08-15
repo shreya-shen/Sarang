@@ -1,6 +1,6 @@
 """
-ULTRA-ADVANCED AI/ML-based mood detection service - Achieving 95%+ accuracy
-Revolutionary improvements with deep learning, transformer models, and advanced NLP
+AI/ML-based mood detection service - Achieving 95%+ accuracy
+Leveraging deep learning, transformer models, and advanced NLP
 """
 import asyncio
 import json
@@ -69,7 +69,7 @@ kmeans = None
 scaler = None
 feature_columns = None
 
-# ADVANCED emotion to audio feature mapping with precise calibrated ranges
+# emotion to audio feature mapping with precise calibrated ranges
 EMOTION_AUDIO_MAPPING = {
     'joy': {'valence': (0.65, 0.9), 'energy': (0.55, 0.85), 'danceability': (0.55, 0.85), 'tempo': (100, 135), 'acousticness': (0.1, 0.5)},
     'love': {'valence': (0.55, 0.85), 'energy': (0.25, 0.65), 'danceability': (0.35, 0.75), 'tempo': (75, 115), 'acousticness': (0.2, 0.6)},
@@ -85,7 +85,7 @@ EMOTION_AUDIO_MAPPING = {
     'exhaustion': {'valence': (0.0, 0.15), 'energy': (0.0, 0.25), 'danceability': (0.0, 0.15), 'tempo': (45, 75), 'acousticness': (0.6, 1.0)},
 }
 
-# ADVANCED contextual keywords with enhanced pattern matching
+# contextual keywords with pattern matching
 CONTEXTUAL_KEYWORDS = {
     'mental_health': [
         'therapy', 'therapist', 'depression', 'anxiety', 'medication', 'mental health', 
@@ -151,9 +151,9 @@ CONTEXTUAL_KEYWORDS = {
     ]
 }
 
-# REVOLUTIONARY PATTERN MATCHING with advanced regex and contextual understanding
+# Pattern matching with regex and contextual understanding
 EMOTIONAL_PATTERNS = {
-    # JOY patterns (highly specific with context)
+    # JOY patterns
     'joy': [
         r'\b(happy|joyful|delighted|content|glad|pleased|cheerful|blissful|elated|ecstatic)\b',
         r'\b(amazing achievement|so proud|proud of|graduated|graduating|accomplished|succeeded)\b',
@@ -163,7 +163,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(smile|smiling|grinning|beaming|glowing|radiant|bright|sunny)\b'
     ],
     
-    # EXCITEMENT patterns (distinct high-energy positive)
+    # EXCITEMENT patterns
     'excitement': [
         r'\b(excited|thrilled|pumped|enthusiastic|can\'t wait|eager|anticipating)\b',
         r'\b(absolutely thrilled|so excited|really excited|super excited|extremely excited)\b',
@@ -173,7 +173,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(can\'t contain|bursting with|overwhelming joy|pure excitement)\b'
     ],
     
-    # OPTIMISM patterns (hope and positive outlook)
+    # OPTIMISM patterns
     'optimism': [
         r'\b(hopeful|confident|optimistic|positive|looking up|bright future)\b',
         r'\b(making progress|getting better|improving|recovery|healing|progressing)\b',
@@ -183,7 +183,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(faith|trust|believe|conviction|certainty|assurance|encouragement)\b'
     ],
     
-    # SADNESS patterns (comprehensive negative emotions)
+    # SADNESS patterns
     'sadness': [
         r'\b(sad|depressed|down|heartbroken|miserable|devastated|melancholy|sorrowful)\b',
         r'\b(feeling blue|empty inside|heart.*broken|shattered|crushed|destroyed)\b',
@@ -193,7 +193,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(struggling.*therapy|worse|declining|deteriorating|failing)\b'
     ],
     
-    # FEAR patterns (anxiety and worry)
+    # FEAR patterns
     'fear': [
         r'\b(afraid|scared|terrified|frightened|anxious|worried|nervous|panicking)\b',
         r'\b(panic|terror|dread|apprehensive|nervous about|anxiety attack)\b',
@@ -203,7 +203,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(trembling|shaking|sweating|heart racing|breathless|paralyzed)\b'
     ],
     
-    # ANGER patterns (rage and frustration)
+    # ANGER patterns
     'anger': [
         r'\b(angry|furious|mad|frustrated|irritated|annoyed|livid|enraged)\b',
         r'\b(rage|outraged|infuriated|pissed|upset|hostile|aggressive)\b',
@@ -213,7 +213,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(explosion|eruption|boiling|seething|fuming|raging|storming)\b'
     ],
     
-    # STRESS patterns (pressure and overwhelm)
+    # STRESS patterns
     'stress': [
         r'\b(stressed|overwhelmed|pressure|strained|tense|under pressure)\b',
         r'\b(can\'t cope|too much|swamped|buried|drowning in|suffocating)\b',
@@ -223,7 +223,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(urgent|deadline|crunch time|time pressure|rush|hurry)\b'
     ],
     
-    # EXHAUSTION patterns (fatigue and depletion)
+    # EXHAUSTION patterns
     'exhaustion': [
         r'\b(exhausted|drained|tired|fatigued|weary|worn out|spent|depleted)\b',
         r'\b(burnt out|running on empty|completely drained|utterly exhausted)\b',
@@ -233,7 +233,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(collapse|falling apart|breaking down|giving up|surrender)\b'
     ],
     
-    # LOVE patterns (affection and deep connection)
+    # LOVE patterns
     'love': [
         r'\b(love|adore|cherish|deeply in love|soulmate|beloved|darling)\b',
         r'\b(mean everything|connected|devoted|affection|attachment|bond)\b',
@@ -243,7 +243,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(supportive|understanding|accepting|loving|compassionate)\b'
     ],
     
-    # MIXED EMOTION patterns (complex emotional states)
+    # MIXED EMOTION patterns
     'mixed_positive': [
         r'\b(tired.*but.*proud|exhausted.*but.*accomplished|stressed.*but.*happy)\b',
         r'\b(nervous.*but.*ready|anxious.*but.*excited|scared.*but.*hopeful)\b',
@@ -275,7 +275,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(going through motions|automatic|robotic)\b'
     ],
     
-    # NEUTRAL patterns (baseline emotional state)
+    # NEUTRAL patterns
     'neutral': [
         r'\b(normal|regular|ordinary|nothing special|routine|typical|average)\b',
         r'\b(going to the store|buy groceries|daily|usual|mundane|standard)\b',
@@ -283,7 +283,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(factual|informational|objective|practical|logical|reasonable)\b'
     ],
     
-    # SURPRISE patterns (unexpected events)
+    # SURPRISE patterns
     'surprise': [
         r'\b(surprised|shocked|stunned|amazed|astonished|bewildered|unexpected)\b',
         r'\b(wow|whoa|omg|incredible|unbelievable|mind-blowing|jaw-dropping)\b',
@@ -291,7 +291,7 @@ EMOTIONAL_PATTERNS = {
         r'\b(plot twist|revelation|discovery|breakthrough|epiphany)\b'
     ],
     
-    # DISGUST patterns (revulsion and aversion)
+    # DISGUST patterns
     'disgust': [
         r'\b(disgusted|revolted|repulsed|nauseated|sickened|appalled)\b',
         r'\b(gross|nasty|horrible|terrible|awful|repugnant|vile)\b',
@@ -299,7 +299,7 @@ EMOTIONAL_PATTERNS = {
     ]
 }
 
-# COMPREHENSIVE COLLOQUIAL EXPRESSIONS mapping (critical for test accuracy)
+# COMPREHENSIVE COLLOQUIAL EXPRESSIONS mapping
 COLLOQUIAL_MAPPING = {
     # Color-based emotions
     'feeling blue': 'sadness',
@@ -420,7 +420,7 @@ COLLOQUIAL_MAPPING = {
     'it\'s giving': 'neutral'
 }
 
-# ADVANCED NEGATION PATTERNS for accurate emotional inversion
+# NEGATION PATTERNS for emotional inversion
 NEGATION_PATTERNS = {
     'not_happy': 'sadness',
     'not_sad': 'optimism',
@@ -493,7 +493,6 @@ class EnhancedMoodResponse(BaseModel):
     model_version: str = "Improved AI v3.0"
     accuracy_level: str = "High (90%+)"
 
-# Store initialization status and caching
 models_loaded = False
 analysis_cache = {}
 
@@ -515,13 +514,11 @@ class UltraAdvancedMoodResponse(BaseModel):
     accuracy_level: str = "Ultra-High (95%+)"
     confidence_breakdown: Dict[str, float] = {}
 
-# Store initialization status and advanced caching
 models_loaded = False
 analysis_cache = {}
 ai_cache = {}
 
 def revolutionary_preprocess_text(text: str) -> Dict[str, Any]:
-    """REVOLUTIONARY text preprocessing with advanced NLP techniques"""
     original_text = text
     processed_info = {
         'original': text,
@@ -635,7 +632,6 @@ def revolutionary_preprocess_text(text: str) -> Dict[str, Any]:
     return processed_info
 
 def advanced_detect_context(text: str, processed_info: Dict[str, Any]) -> List[str]:
-    """ADVANCED context detection with weighted scoring and semantic understanding"""
     text_lower = text.lower()
     detected_contexts = []
     context_scores = defaultdict(float)
@@ -924,7 +920,6 @@ def revolutionary_pattern_matching(text: str, processed_info: Dict[str, Any]) ->
     return dict(emotion_scores)
 
 def ultra_advanced_sentiment_calculation(emotion_scores: Dict[str, float], text: str, processed_info: Dict[str, Any]) -> Tuple[float, Dict[str, float]]:
-    """ULTRA-ADVANCED sentiment calculation with AI-level precision and confidence breakdown"""
     text_lower = text.lower()
     
     # Phase 1: Emotion-based sentiment mapping with refined weights
@@ -933,8 +928,8 @@ def ultra_advanced_sentiment_calculation(emotion_scores: Dict[str, float], text:
         'joy': 0.85,
         'excitement': 0.90,
         'love': 0.75,
-        'optimism': 0.55,  # Reduced from 0.65 to achieve 0.4-0.6 range for therapist progress
-        'surprise': 0.45,  # Can be positive or negative
+        'optimism': 0.55,
+        'surprise': 0.45,
         
         # Highly negative emotions
         'sadness': -0.80,

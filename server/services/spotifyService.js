@@ -33,7 +33,7 @@ const getSpotifyAuthUrl = (userUUID) => {
  */
 const handleCallbackExchange = async (code, state) => {
   try {
-    console.log('🎵 Exchanging authorization code for tokens');
+    console.log('Exchanging authorization code for tokens');
     
     // Use promise-based approach instead of async/await to avoid callback issues
     const data = await new Promise((resolve, reject) => {
@@ -90,11 +90,11 @@ const handleCallbackExchange = async (code, state) => {
       throw new Error(`Failed to store Spotify tokens: ${error.message}`);
     }
     
-    console.log('✅ Spotify tokens stored successfully');
+    console.log('Spotify tokens stored successfully');
     return { success: true, spotifyUserId, displayName };
     
   } catch (error) {
-    console.error('❌ Error in Spotify callback exchange:', error);
+    console.error('Error in Spotify callback exchange:', error);
     throw new Error(`Spotify authorization failed: ${error.message}`);
   }
 };
@@ -113,24 +113,24 @@ const getValidAccessToken = async (userUUID) => {
       .single();
     
     if (error || !data) {
-      console.error('🔑 No Spotify tokens found for user:', userUUID);
-      console.error('🔑 Database error:', error);
+      console.error('No Spotify tokens found for user:', userUUID);
+      console.error('Database error:', error);
       throw new Error('No Spotify tokens found. Please reconnect your account.');
     }
     
-    console.log('🔑 Token found, expires at:', data.expires_at);
+    console.log('Token found, expires at:', data.expires_at);
     
     const now = new Date();
     const expiresAt = new Date(data.expires_at);
     
     // If token is still valid, return it
     if (now < expiresAt) {
-      console.log('🔑 Token is still valid, returning existing token');
+      console.log('Token is still valid, returning existing token');
       return data.access_token;
     }
     
     // Token expired, refresh it
-    console.log('🔄 Token expired, refreshing...');
+    console.log('Token expired, refreshing...');
     spotifyApi.setRefreshToken(data.refresh_token);
     
     try {
@@ -143,7 +143,7 @@ const getValidAccessToken = async (userUUID) => {
           }
         });
       });
-      console.log('🔄 Token refresh successful');
+      console.log('Token refresh successful');
       
       const newAccessToken = refreshData.body.access_token;
       const newExpiresIn = refreshData.body.expires_in;
@@ -160,26 +160,24 @@ const getValidAccessToken = async (userUUID) => {
         .eq('user_id', userUUID);
       
       if (updateError) {
-        console.error('🔄 Error updating token in database:', updateError);
+        console.error('Error updating token in database:', updateError);
       } else {
-        console.log('🔄 Token updated in database successfully');
+        console.log('Token updated in database successfully');
       }
       
       return newAccessToken;
     } catch (refreshError) {
-      console.error('🔄 Error refreshing token:', refreshError);
+      console.error('Error refreshing token:', refreshError);
       throw new Error('Failed to refresh Spotify token. Please reconnect your account.');
     }
     
   } catch (error) {
-    console.error('❌ Error getting valid access token:', error);
+    console.error('Error getting valid access token:', error);
     throw new Error(`Failed to get valid Spotify token: ${error.message}`);
   }
 };
 
-/**
- * Check if user has connected Spotify
- */
+//Check if user has connected Spotify
 const isSpotifyConnected = async (userUUID) => {
   try {
     const { data, error } = await supabase
@@ -194,9 +192,7 @@ const isSpotifyConnected = async (userUUID) => {
   }
 };
 
-/**
- * Get Spotify user profile
- */
+//Get Spotify user profile
 const getSpotifyProfile = async (userUUID) => {
   try {
     const accessToken = await getValidAccessToken(userUUID);
@@ -229,9 +225,8 @@ const getSpotifyProfile = async (userUUID) => {
   }
 };
 
-/**
- * Fetch user's liked tracks
- */
+
+//Fetch user's liked tracks
 const fetchUserLikedTracks = async (userUUID, limit = 50, offset = 0) => {
   try {
     const accessToken = await getValidAccessToken(userUUID);
@@ -267,9 +262,7 @@ const fetchUserLikedTracks = async (userUUID, limit = 50, offset = 0) => {
   }
 };
 
-/**
- * Get all user's liked tracks (paginated)
- */
+//Get all user's liked tracks (paginated)
 const getAllUserLikedTracks = async (userUUID) => {
   const allTracks = [];
   let offset = 0;
@@ -293,9 +286,7 @@ const getAllUserLikedTracks = async (userUUID) => {
   }
 };
 
-/**
- * Fetch user's top tracks
- */
+//Fetch user's top tracks
 const fetchUserTopTracks = async (userUUID, limit = 20, timeRange = 'medium_term') => {
   try {
     const accessToken = await getValidAccessToken(userUUID);
@@ -330,9 +321,8 @@ const fetchUserTopTracks = async (userUUID, limit = 20, timeRange = 'medium_term
   }
 };
 
-/**
- * Get audio features for tracks
- */
+
+//Get audio features for tracks
 const getAudioFeatures = async (userUUID, trackIds) => {
   try {
     const accessToken = await getValidAccessToken(userUUID);
@@ -354,18 +344,16 @@ const getAudioFeatures = async (userUUID, trackIds) => {
   }
 };
 
-/**
- * Create a playlist for mood
- */
+//Create a playlist for mood
 const createPlaylistForMood = async (userUUID, playlistName, trackUris, description = '') => {
   try {
-    console.log('🎵 Creating playlist:', playlistName, 'with', trackUris?.length || 0, 'tracks');
+    console.log('Creating playlist:', playlistName, 'with', trackUris?.length || 0, 'tracks');
     
     const accessToken = await getValidAccessToken(userUUID);
     spotifyApi.setAccessToken(accessToken);
     
     // Get user profile to create playlist
-    console.log('🎵 Getting user profile...');
+    console.log('Getting user profile...');
     const userProfile = await new Promise((resolve, reject) => {
       spotifyApi.getMe((err, data) => {
         if (err) {
@@ -384,16 +372,16 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
       throw new Error('Invalid user profile response structure from Spotify');
     }
     const userId = userProfile.body.id;
-    console.log('🎵 User ID:', userId);
+    console.log('User ID:', userId);
     
     // Create playlist with more detailed error handling
-    console.log('🎵 Creating playlist on Spotify...');
+    console.log('Creating playlist on Spotify...');
     let playlistData;
     
     // Try direct promise approach first
     try {
-      console.log('🎵 Trying direct promise approach for createPlaylist...');
-      console.log('🎵 Parameters:', { userId, playlistName, description });
+      console.log('Trying direct promise approach for createPlaylist...');
+      console.log('Parameters:', { userId, playlistName, description });
       
       // Try the method without userId parameter (let it use the current user)
       playlistData = await spotifyApi.createPlaylist(playlistName, {
@@ -401,33 +389,33 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
         public: false
       });
       
-      console.log('✅ Direct promise approach worked!');
-      console.log('🎵 Raw playlist response:', playlistData);
+      console.log('Direct promise approach worked!');
+      console.log('Raw playlist response:', playlistData);
       
-      // Check if we got a direct response instead of wrapped response
+      // Check if we get a direct response instead of wrapped response
       if (playlistData && playlistData.id) {
         // Direct response - wrap it
-        console.log('🎵 Got direct response, wrapping in body structure');
+        console.log('Got direct response, wrapping in body structure');
         playlistData = { body: playlistData };
       } else if (!playlistData) {
         // Try with userId parameter
-        console.log('🎵 Trying with userId parameter...');
+        console.log('Trying with userId parameter...');
         playlistData = await spotifyApi.createPlaylist(userId, playlistName, {
           description,
           public: false
         });
-        console.log('🎵 Response with userId:', playlistData);
+        console.log('Response with userId:', playlistData);
         
         if (playlistData && playlistData.id) {
           playlistData = { body: playlistData };
         }
       }
     } catch (directError) {
-      console.error('❌ Direct promise approach failed:', directError);
+      console.error('Direct promise approach failed:', directError);
       
       // Fallback to callback approach
       try {
-        console.log('🎵 Trying callback approach for createPlaylist...');
+        console.log('Trying callback approach for createPlaylist...');
         playlistData = await new Promise((resolve, reject) => {
           spotifyApi.createPlaylist(userId, playlistName, {
             description,
@@ -437,13 +425,13 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
               console.error('CreatePlaylist callback error (fallback):', err);
               reject(err);
             } else {
-              console.log('✅ Callback approach worked!');
+              console.log('Callback approach worked!');
               resolve(data);
             }
           });
         });
       } catch (callbackError) {
-        console.error('❌ Both approaches failed');
+        console.error('Both approaches failed');
         console.error('DirectError:', directError);
         console.error('CallbackError:', callbackError);
         
@@ -462,7 +450,7 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
       throw new Error('No response from Spotify when creating playlist');
     }
     
-    console.log('🎵 Playlist creation response:', JSON.stringify(playlistData, null, 2));
+    console.log('Playlist creation response:', JSON.stringify(playlistData, null, 2));
     
     if (!playlistData.body) {
       console.error('Spotify playlist creation response:', playlistData);
@@ -472,21 +460,21 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
     const playlistId = playlistData.body.id;
     const playlistUrl = playlistData.body.external_urls?.spotify || `https://open.spotify.com/playlist/${playlistId}`;
     
-    console.log('✅ Playlist created successfully:', playlistId);
+    console.log('Playlist created successfully:', playlistId);
     
     // Add tracks to playlist
     let tracksAdded = 0;
     if (trackUris && trackUris.length > 0) {
       try {
-        console.log('🎵 Adding', trackUris.length, 'tracks to playlist...');
-        console.log('🎵 Trying direct promise approach for addTracksToPlaylist...');
+        console.log('Adding', trackUris.length, 'tracks to playlist...');
+        console.log('Trying direct promise approach for addTracksToPlaylist...');
         
         await spotifyApi.addTracksToPlaylist(playlistId, trackUris);
         
         tracksAdded = trackUris.length;
-        console.log('✅ Successfully added', tracksAdded, 'tracks to playlist');
+        console.log('Successfully added', tracksAdded, 'tracks to playlist');
       } catch (addError) {
-        console.warn('⚠️ Failed to add some tracks to playlist:', addError.message);
+        console.warn('Failed to add some tracks to playlist:', addError.message);
         // Continue anyway, playlist was created successfully
       }
     }
@@ -501,8 +489,8 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
       tracks_added: tracksAdded
     };
   } catch (error) {
-    console.error('❌ Error in createPlaylistForMood:', error);
-    console.error('❌ Error details:', {
+    console.error('Error in createPlaylistForMood:', error);
+    console.error('Error details:', {
       name: error.name,
       message: error.message,
       statusCode: error.statusCode,
@@ -512,9 +500,7 @@ const createPlaylistForMood = async (userUUID, playlistName, trackUris, descript
   }
 };
 
-/**
- * Get user's available devices
- */
+//Get user's available devices
 const getUserDevices = async (userUUID) => {
   try {
     const accessToken = await getValidAccessToken(userUUID);
@@ -605,7 +591,7 @@ const disconnectSpotify = async (userUUID) => {
  */
 const testSpotifyConnection = async (userUUID) => {
   try {
-    console.log('🔍 Testing Spotify connection for user:', userUUID);
+    console.log('Testing Spotify connection for user:', userUUID);
     
     // Check if we have environment variables
     if (!process.env.SPOTIFY_CLIENT_ID || !process.env.SPOTIFY_CLIENT_SECRET) {
@@ -613,7 +599,7 @@ const testSpotifyConnection = async (userUUID) => {
     }
     
     const accessToken = await getValidAccessToken(userUUID);
-    console.log('✅ Access token retrieved successfully');
+    console.log('Access token retrieved successfully');
     
     spotifyApi.setAccessToken(accessToken);
     
@@ -628,7 +614,7 @@ const testSpotifyConnection = async (userUUID) => {
       });
     });
     
-    console.log('✅ Spotify API connection successful, user:', userProfile.body.display_name);
+    console.log('Spotify API connection successful, user:', userProfile.body.display_name);
     
     return {
       success: true,
@@ -636,17 +622,15 @@ const testSpotifyConnection = async (userUUID) => {
       id: userProfile.body.id
     };
   } catch (error) {
-    console.error('❌ Spotify connection test failed:', error);
+    console.error('Spotify connection test failed:', error);
     throw error;
   }
 };
 
-/**
- * Search for tracks on Spotify
- */
+//Search for tracks on Spotify
 const searchTracks = async (userUUID, query, limit = 20) => {
   try {
-    console.log('🔍 Searching for tracks:', query);
+    console.log('Searching for tracks:', query);
     
     const accessToken = await getValidAccessToken(userUUID);
     spotifyApi.setAccessToken(accessToken);
@@ -673,20 +657,18 @@ const searchTracks = async (userUUID, query, limit = 20) => {
       external_urls: track.external_urls
     }));
     
-    console.log(`🔍 Found ${tracks.length} tracks for query: ${query}`);
+    console.log(`Found ${tracks.length} tracks for query: ${query}`);
     return tracks;
   } catch (error) {
-    console.error('❌ Search tracks error:', error);
+    console.error('Search tracks error:', error);
     throw error;
   }
 };
 
-/**
- * Get recommendations based on mood analysis
- */
+//Get recommendations based on mood analysis
 const getRecommendationsForMood = async (userUUID, moodAnalysis, limit = 20) => {
   try {
-    console.log('🎵 Getting recommendations for mood:', moodAnalysis.primary_emotion);
+    console.log('Getting recommendations for mood:', moodAnalysis.primary_emotion);
     
     const accessToken = await getValidAccessToken(userUUID);
     spotifyApi.setAccessToken(accessToken);
@@ -726,7 +708,7 @@ const getRecommendationsForMood = async (userUUID, moodAnalysis, limit = 20) => 
       recommendationParams.target_tempo = audioTargets.tempo;
     }
     
-    console.log('🎵 Recommendation parameters:', recommendationParams);
+    console.log('Recommendation parameters:', recommendationParams);
     
     const recommendations = await new Promise((resolve, reject) => {
       spotifyApi.getRecommendations(recommendationParams, (err, data) => {
@@ -750,10 +732,10 @@ const getRecommendationsForMood = async (userUUID, moodAnalysis, limit = 20) => 
       external_urls: track.external_urls
     }));
     
-    console.log(`🎵 Generated ${tracks.length} mood-based recommendations`);
+    console.log(`Generated ${tracks.length} mood-based recommendations`);
     return tracks;
   } catch (error) {
-    console.error('❌ Get mood recommendations error:', error);
+    console.error('Get mood recommendations error:', error);
     throw error;
   }
 };

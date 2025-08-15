@@ -7,10 +7,10 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
-console.log('🚀 Starting Sarang Services...\n');
+console.log('Starting Sarang Services...\n');
 
 // Start Python mood service
-console.log('📦 Starting Python Mood Analysis Service...');
+console.log('Starting Python Mood Analysis Service...');
 const pythonService = spawn('python', ['mood_service.py'], {
   cwd: path.join(__dirname, 'python'),
   stdio: 'inherit'
@@ -18,7 +18,7 @@ const pythonService = spawn('python', ['mood_service.py'], {
 
 // Wait for Python service to initialize
 setTimeout(() => {
-  console.log('\n🌟 Starting Main Node.js Server...');
+  console.log('\nStarting Main Node.js Server...');
   
   // Start main Node.js server
   const nodeServer = spawn('node', ['app.js'], {
@@ -28,7 +28,7 @@ setTimeout(() => {
 
   // Handle graceful shutdown
   process.on('SIGINT', () => {
-    console.log('\n🔄 Shutting down services gracefully...');
+    console.log('\nShutting down services gracefully...');
     pythonService.kill('SIGTERM');
     nodeServer.kill('SIGTERM');
     setTimeout(() => {
@@ -37,7 +37,7 @@ setTimeout(() => {
   });
 
   process.on('SIGTERM', () => {
-    console.log('\n🔄 Received SIGTERM, shutting down...');
+    console.log('\nReceived SIGTERM, shutting down...');
     pythonService.kill('SIGTERM');
     nodeServer.kill('SIGTERM');
     setTimeout(() => {
@@ -47,7 +47,7 @@ setTimeout(() => {
 
 }, 3000); // Wait 3 seconds for Python service to initialize
 
-console.log('\n✅ Both services will be available shortly!');
-console.log('🎵 Mood Service: http://localhost:8001');
-console.log('🌐 Main App: http://localhost:5000 (or your configured port)');
+console.log('\nBoth services will be available shortly!');
+console.log('Mood Service: http://localhost:8001');
+console.log('Main App: http://localhost:5000 (or your configured port)');
 console.log('\nPress Ctrl+C to stop both services');

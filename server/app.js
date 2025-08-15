@@ -21,7 +21,6 @@ app.use(cors({
       'https://f822f56e9b9f.ngrok-free.app'
     ];
     
-    // In production, we'll dynamically add the actual domain
     if (process.env.NODE_ENV === 'production' && process.env.CLIENT_URL) {
       allowedOrigins.push(process.env.CLIENT_URL);
     }
@@ -55,6 +54,6 @@ const PORT = process.env.PORT || 5000;
 
 // Run HTTP server for ngrok tunneling
 app.listen(PORT, () => {
-  console.log(`� HTTP Server running on http://localhost:${PORT}`);
-  console.log(`� Ready for ngrok tunneling to enable Spotify HTTPS callbacks`);
+  console.log(`HTTP Server running on http://localhost:${PORT}`);
+  console.log(`Ready for ngrok tunneling to enable Spotify HTTPS callbacks`);
 });

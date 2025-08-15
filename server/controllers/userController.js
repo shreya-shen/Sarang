@@ -3,19 +3,17 @@ const { getOrCreateUserUUID } = require('../utils/userMapping');
 
 const createUser = async (req, res) => {
   try {
-    const { userId } = req.auth; // From Clerk
+    const { userId } = req.auth;
     const { emailAddress, firstName, lastName, email, name } = req.body;
 
-    // Convert Clerk ID to UUID and create profile
+    // Convert Clerk ID to UUID
     const userUUID = await getOrCreateUserUUID(userId);
 
-    // Prepare user data matching the profiles schema: id, name, email, created_at
     const userData = {
       name: name || `${firstName || ''} ${lastName || ''}`.trim() || 'User',
       email: email || emailAddress || '',
     };
 
-    // Try to update existing profile, or it will be created by userMapping
     const { data, error } = await supabase
       .from('profiles')
       .update(userData)
@@ -28,7 +26,6 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    // If no rows were updated, the profile should already exist from userMapping
     if (error && error.code === 'PGRST116') {
       const { data: existingData, error: fetchError } = await supabase
         .from('profiles')
@@ -53,7 +50,7 @@ const createUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const { userId } = req.auth; // From Clerk
+    const { userId } = req.auth;
 
     // Convert Clerk ID to UUID
     const userUUID = await getOrCreateUserUUID(userId);
@@ -88,7 +85,6 @@ const setInitialUsername = async (req, res) => {
     // Convert Clerk ID to UUID
     const userUUID = await getOrCreateUserUUID(userId);
 
-    // Get Clerk user data to extract email
     const { clerkClient } = require('@clerk/clerk-sdk-node');
     let email = '';
     
@@ -102,7 +98,6 @@ const setInitialUsername = async (req, res) => {
       console.error('Error fetching Clerk user for email:', clerkError);
     }
 
-    // Update the profile with both username and email
     const updateData = { name: username.trim() };
     if (email) {
       updateData.email = email;

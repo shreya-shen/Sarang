@@ -2,16 +2,13 @@ const fetch = require('node-fetch');
 const NodeCache = require('node-cache');
 const { spawn } = require('child_process');
 
-// Cache for mood analysis results (1 hour TTL)
 const moodCache = new NodeCache({ stdTTL: 3600 });
 
-// Service configuration - ULTRA-ADVANCED MODE (81%+ Accuracy)
 const PRODUCTION_MOOD_SERVICE_URL = process.env.PRODUCTION_MOOD_SERVICE_URL || 'http://localhost:5001';
 const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:5001'; // Fallback to production service
 const SERVICE_TIMEOUT = 15000; // 15 seconds for AI processing
-const USE_ULTRA_ADVANCED = true; // Always use ultra-advanced system
+const USE_ULTRA_ADVANCED = true;
 
-// Check if Ultra-Advanced Production service is available
 const checkServiceHealth = async (serviceUrl = PRODUCTION_MOOD_SERVICE_URL) => {
   try {
     const response = await fetch(`${serviceUrl}/health`, {
@@ -20,7 +17,7 @@ const checkServiceHealth = async (serviceUrl = PRODUCTION_MOOD_SERVICE_URL) => {
     const health = await response.json();
     return health.status === 'healthy';
   } catch (error) {
-    console.log(`⚠️ Ultra-Advanced Service at ${serviceUrl} not available`);
+    console.log(`Ultra-Advanced Service at ${serviceUrl} not available`);
     return false;
   }
 };
@@ -28,7 +25,7 @@ const checkServiceHealth = async (serviceUrl = PRODUCTION_MOOD_SERVICE_URL) => {
 // Ultra-Advanced Sentiment Analysis using Production Service
 const analyzeUltraAdvanced = async (text) => {
   try {
-    console.log('🚀 Using Ultra-Advanced Mood Detection Service (81%+ accuracy)');
+    console.log('Using Ultra-Advanced Mood Detection Service (81%+ accuracy)');
     
     const response = await fetch(`${PRODUCTION_MOOD_SERVICE_URL}/analyze`, {
       method: 'POST',
@@ -44,7 +41,7 @@ const analyzeUltraAdvanced = async (text) => {
     }
 
     const result = await response.json();
-    console.log('✨ Ultra-Advanced analysis result:', {
+    console.log('Ultra-Advanced analysis result:', {
       emotion: result.primary_emotion,
       sentiment: result.sentiment_score,
       confidence: result.confidence,
@@ -67,12 +64,11 @@ const analyzeUltraAdvanced = async (text) => {
       label: result.primary_emotion
     };
   } catch (error) {
-    console.error('❌ Ultra-Advanced sentiment analysis error:', error);
+    console.error('Ultra-Advanced sentiment analysis error:', error);
     throw new Error(`Ultra-Advanced analysis failed: ${error.message}`);
   }
 };
 
-// Enhanced HTTP-based sentiment analysis
 const analyzeSentimentFast = async (text, serviceUrl = PYTHON_SERVICE_URL) => {
   try {
     const response = await fetch(`${serviceUrl}/analyze`, {
@@ -89,7 +85,7 @@ const analyzeSentimentFast = async (text, serviceUrl = PYTHON_SERVICE_URL) => {
     }
 
     const result = await response.json();
-    console.log('📊 Enhanced service result:', result);
+    console.log('Enhanced service result:', result);
     
     // Return the full enhanced result object for better integration
     return result;
@@ -99,7 +95,6 @@ const analyzeSentimentFast = async (text, serviceUrl = PYTHON_SERVICE_URL) => {
   }
 };
 
-// Fallback to original process spawning method
 const analyzeSentimentFallback = (text) => {
   const { spawn } = require('child_process');
   const path = require('path');
@@ -144,20 +139,18 @@ const analyzeSentiment = async (text) => {
   const cacheKey = `mood:${text.toLowerCase().trim()}`;
   const cachedResult = moodCache.get(cacheKey);
   if (cachedResult) {
-    console.log('📋 Using cached sentiment result');
+    console.log('Using cached sentiment result');
     return cachedResult;
   }
 
   let sentimentResult;
   
-  // Use ONLY Ultra-Advanced Production Service (95%+ accuracy)
   const ultraServiceAvailable = await checkServiceHealth(PRODUCTION_MOOD_SERVICE_URL);
   if (ultraServiceAvailable) {
-    console.log('🌟 Using Ultra-Advanced Production Mood Service (95%+ accuracy)');
+    console.log('Using Ultra-Advanced Production Mood Service (95%+ accuracy)');
     try {
       const result = await analyzeUltraAdvanced(text);
       
-      // Mark as ultra-advanced and cache the result
       result.ultra_advanced = true;
       result.method = 'ultra_advanced_ai';
       result.accuracy_level = '95%+';
@@ -165,11 +158,11 @@ const analyzeSentiment = async (text) => {
       return result;
       
     } catch (error) {
-      console.log('❌ Ultra-Advanced service failed:', error.message);
+      console.log('Ultra-Advanced service failed:', error.message);
       throw new Error('High-accuracy sentiment analysis service unavailable');
     }
   } else {
-    console.log('❌ Ultra-Advanced service not available');
+    console.log('Ultra-Advanced service not available');
     throw new Error('High-accuracy sentiment analysis service not running on port 5001');
   }
 };
@@ -181,6 +174,6 @@ module.exports = {
   analyzeUltraAdvanced,
   clearCache: () => {
     moodCache.flushAll();
-    console.log('🧹 Sentiment analysis cache cleared');
+    console.log('Sentiment analysis cache cleared');
   }
 };

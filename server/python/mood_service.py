@@ -31,7 +31,7 @@ try:
     sentiment_model = pipeline("sentiment-analysis",  # type: ignore
                               model="cardiffnlp/twitter-roberta-base-sentiment-latest",
                               return_all_scores=True) # type: ignore
-    print("✅ Loaded advanced RoBERTa sentiment model")
+    print("Loaded advanced RoBERTa sentiment model")
 except Exception as e:
     sentiment_model = None
     print("transformers pipeline not available:", e)
@@ -99,8 +99,8 @@ async def lifespan(app: FastAPI):
     global sentiment_model, emotion_model, nlp, df, kmeans, scaler, models_loaded, feature_columns
     
     try:
-        print("🚀 Starting Sarang Mood Analysis Service...")
-        print("📦 Loading models (this may take 10-15 seconds)...")
+        print("Starting Sarang Mood Analysis Service...")
+        print("Loading models (this may take 10-15 seconds)...")
         
         # Import heavy libraries after startup message
         from transformers import pipeline
@@ -111,7 +111,7 @@ async def lifespan(app: FastAPI):
         import numpy as np
         
         # Load enhanced sentiment and emotion models with optimizations
-        print("📊 Loading enhanced sentiment analysis models...")
+        print("Loading enhanced sentiment analysis models...")
         sentiment_model = pipeline(
             "sentiment-analysis",  # type: ignore
             model="cardiffnlp/twitter-roberta-base-sentiment-latest",
@@ -123,7 +123,7 @@ async def lifespan(app: FastAPI):
         ) # type: ignore
         
         # Load emotion detection model with speed optimizations
-        print("🎭 Loading emotion detection model...")
+        print("Loading emotion detection model...")
         emotion_model = None
         # Use only the fastest, most reliable model for speed
         emotion_models_to_try = [
@@ -133,7 +133,7 @@ async def lifespan(app: FastAPI):
         
         for model_name in emotion_models_to_try:
             try:
-                print(f"🔄 Trying emotion model: {model_name}")
+                print(f"Trying emotion model: {model_name}")
                 emotion_model = pipeline(
                     "text-classification",
                     model=model_name,
@@ -143,29 +143,29 @@ async def lifespan(app: FastAPI):
                     max_length=256,
                     truncation=True
                 )
-                print(f"✅ Emotion model loaded successfully: {model_name}")
+                print(f"Emotion model loaded successfully: {model_name}")
                 break
             except Exception as e:
-                print(f"⚠️ Model {model_name} failed: {e}")
+                print(f"Model {model_name} failed: {e}")
                 continue
         
         if emotion_model is None:
-            print("⚠️ Using sentiment-only analysis for maximum speed")
+            print("Using sentiment-only analysis for maximum speed")
         
         # Load spaCy model
-        print("🧠 Loading spaCy NLP model...")
+        print("Loading spaCy NLP model...")
         nlp = spacy.load("en_core_web_sm")
         
         # Load dataset
-        print("📈 Loading Spotify dataset...")
+        print("Loading Spotify dataset...")
         df = pd.read_csv("./cleaned_spotify.csv")
-        print(f"✅ Loaded {len(df)} tracks")
+        print(f"Loaded {len(df)} tracks")
         
         # Pre-compute clustering with better feature selection
-        print("🎯 Setting up enhanced music clustering...")
+        print("Setting up enhanced music clustering...")
         # Check available columns and use only what exists
         available_columns = df.columns.tolist()
-        print(f"📋 Available columns: {available_columns}")
+        print(f"Available columns: {available_columns}")
         
         desired_feature_columns = [
             'valence', 'energy', 'danceability', 'acousticness', 'instrumentalness',
@@ -175,7 +175,7 @@ async def lifespan(app: FastAPI):
         
         # Use only columns that actually exist in the dataset
         feature_columns = [col for col in desired_feature_columns if col in available_columns]
-        print(f"🎯 Using feature columns: {feature_columns}")
+        print(f"Using feature columns: {feature_columns}")
         
         # Prepare features for clustering with better preprocessing
         features = df[feature_columns].fillna(df[feature_columns].median())  # Use median for robustness
@@ -214,7 +214,7 @@ async def lifespan(app: FastAPI):
                     'popularity_avg': float(df[cluster_mask]['popularity'].mean()) if 'popularity' in df.columns else 60
                 }
         
-        print(f"📊 Enhanced cluster analysis complete with {len(cluster_info)} clusters:")
+        print(f"Enhanced cluster analysis complete with {len(cluster_info)} clusters:")
         for i, info in cluster_info.items():
             print(f"   Cluster {i}: {info['size']} songs, "
                   f"valence={info['mean_valence']:.2f}, "
@@ -228,18 +228,18 @@ async def lifespan(app: FastAPI):
         }
         
         models_loaded = True
-        print("✅ All enhanced models loaded successfully!")
-        print("🎵 Sarang Enhanced Mood Analysis Service is ready!")
+        print("All enhanced models loaded successfully!")
+        print("Sarang Enhanced Mood Analysis Service is ready!")
         
     except Exception as e:
-        print(f"❌ Error loading models: {str(e)}")
+        print(f"Error loading models: {str(e)}")
         models_loaded = False
         raise e
     
     yield
     
     # Shutdown (cleanup if needed)
-    print("🔄 Shutting down Sarang Mood Analysis Service...")
+    print("Shutting down Sarang Mood Analysis Service...")
 
 # Create FastAPI app with lifespan
 app = FastAPI(

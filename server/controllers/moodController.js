@@ -13,27 +13,25 @@ const logMood = async (req, res) => {
     const userUUID = await getOrCreateUserUUID(userId);
     console.log('Using UUID:', userUUID, 'for Clerk ID:', userId);
     
-    // Use sentiment data from frontend if provided, otherwise analyze
     let finalSentimentScore = sentiment_score;
     let finalSentimentLabel = sentiment_label;
     
     if (!finalSentimentScore) {
-      console.log('🔍 Analyzing sentiment for text:', text);
+      console.log('Analyzing sentiment for text:', text);
       const sentimentData = await analyzeSentiment(text);
-      console.log('📊 Sentiment analysis result:', sentimentData);
-      
-      // Handle both legacy and new response formats
+      console.log('Sentiment analysis result:', sentimentData);
+
       finalSentimentScore = sentimentData.sentiment_score || sentimentData.score || 0;
       finalSentimentLabel = sentimentData.primary_emotion || sentimentData.label || 'neutral';
       
-      console.log('✅ Final sentiment - Score:', finalSentimentScore, 'Label:', finalSentimentLabel);
+      console.log('Final sentiment - Score:', finalSentimentScore, 'Label:', finalSentimentLabel);
     }
 
     const { data, error } = await supabase.from('moods').insert([
       {
-        userId: userUUID, // Use generated UUID instead of Clerk ID
-        inputText: text, // Match your schema: camelCase
-        sentimentScore: finalSentimentScore, // Match your schema: camelCase
+        userId: userUUID,
+        inputText: text,
+        sentimentScore: finalSentimentScore,
         created_at: new Date().toISOString()
       }
     ]).select().single();
@@ -60,7 +58,7 @@ const getMoodHistory = async (req, res) => {
     const { data, error } = await supabase
       .from('moods')
       .select('*')
-      .eq('userId', userUUID) // Use generated UUID
+      .eq('userId', userUUID)
       .order('created_at', { ascending: false })
       .limit(50); // Get last 50 mood entries
 
@@ -82,30 +80,26 @@ const analyzeMoodSentiment = async (req, res) => {
   }
 
   try {
-    console.log('🤖 Analyzing sentiment with enhanced AI models for text:', text.substring(0, 100) + '...');
+    console.log('Analyzing sentiment with enhanced AI models for text:', text.substring(0, 100) + '...');
     const sentimentResult = await analyzeSentiment(text);
-    
-    // Handle both simple score and detailed AI result
+ 
     let sentimentScore, confidence, label;
     
     if (typeof sentimentResult === 'object' && sentimentResult.sentiment_score !== undefined) {
-      // Enhanced AI result with detailed analysis
+
       sentimentScore = sentimentResult.sentiment_score;
       confidence = sentimentResult.confidence || 0.8;
       label = sentimentResult.primary_emotion || (sentimentScore > 0 ? "positive" : "negative");
       
-      console.log('✅ Enhanced AI analysis result:', {
+      console.log('Enhanced AI analysis result:', {
         score: sentimentScore,
         confidence: confidence,
         emotion: label,
         approach: sentimentResult.approach || 'Enhanced AI'
       });
     } else {
-      // Simple sentiment score - convert to detailed format
       sentimentScore = typeof sentimentResult === 'number' ? sentimentResult : 0;
       confidence = Math.min(0.95, 0.7 + Math.abs(sentimentScore) * 0.25);
-      
-      // Enhanced label mapping based on sentiment score
       if (sentimentScore < -0.6) label = "Very Low";
       else if (sentimentScore < -0.3) label = "Low";
       else if (sentimentScore < -0.1) label = "Slightly Low";
@@ -114,10 +108,10 @@ const analyzeMoodSentiment = async (req, res) => {
       else if (sentimentScore < 0.6) label = "Happy";
       else label = "Very Happy";
       
-      console.log('✅ Standard sentiment analysis result:', sentimentScore);
+      console.log('Standard sentiment analysis result:', sentimentScore);
     }
     
-    // Normalize score to ensure it's within bounds
+    // Normalize score
     const normalizedScore = Math.max(-1, Math.min(1, sentimentScore));
     
     const result = {
@@ -128,10 +122,10 @@ const analyzeMoodSentiment = async (req, res) => {
       accuracy_level: typeof sentimentResult === 'object' ? "High (AI-First)" : "Standard"
     };
 
-    console.log('📤 Sending enhanced sentiment result:', result);
+    console.log('Sending enhanced sentiment result:', result);
     res.json(result);
   } catch (error) {
-    console.error('❌ Enhanced sentiment analysis error:', error.message);
+    console.error('Enhanced sentiment analysis error:', error.message);
     res.status(500).json({ 
       error: 'Failed to analyze sentiment: ' + error.message,
       fallback_available: true
@@ -139,10 +133,8 @@ const analyzeMoodSentiment = async (req, res) => {
   }
 };
 
-// Temporary diagnostic function to check database schema
 const checkSchema = async (req, res) => {
   try {
-    // Try to get any existing mood record to see column structure
     const { data, error } = await supabase
       .from('moods')
       .select('*')

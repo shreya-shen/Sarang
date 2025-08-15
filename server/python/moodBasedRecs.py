@@ -78,7 +78,7 @@ def sentiment_to_cluster_index(sentiment_score, n_clusters):
     norm = (sentiment_score + 1) / 2  # Map from [-1, 1] to [0, 1]
     return min(int(norm * n_clusters), n_clusters - 1)
 
-# ✅ 5. Enhanced sentence-level sentiment scoring using AI models
+# 5. Enhanced sentence-level sentiment scoring using AI models
 def get_sentiment(text):
     """Advanced sentiment analysis using improved AI models"""
     doc = nlp(text)
