@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Calendar, TrendingUp, Music, HeadphonesIcon } from "lucide-react";
+import { Calendar, TrendingUp, Music, HeadphonesIcon, User } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import { useAuthenticatedFetch } from "@/hooks/useAuthenticatedFetch";
 import { toast } from "sonner";
@@ -34,14 +34,47 @@ const MoodHistory = () => {
   const { authenticatedFetch } = useAuthenticatedFetch();
   const navigate = useNavigate();
 
+  // Show sign-in message if user is not signed in
+  if (!isSignedIn) {
+    return (
+      <div className="max-w-6xl mx-auto space-y-8 animate-fade-in px-4 sm:px-6">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-sarang-charcoal font-['Montserrat']">
+            My Mood Journey
+          </h1>
+          <p className="text-sarang-brown max-w-2xl mx-auto font-['Montserrat']">
+            Track your emotional wellness and see how music therapy is helping you over time
+          </p>
+        </div>
+        
+        <Card className="bg-sarang-cream backdrop-blur-sm border-2 border-black rounded-xl text-center py-16 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardContent>
+            <User className="h-16 w-16 text-sarang-gray mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-sarang-charcoal mb-2 font-['Montserrat']">
+              Sign in to view your history
+            </h3>
+            <p className="text-sarang-brown mb-6 font-semibold font-['Montserrat']">
+              Track your mood journey and see your progress over time
+            </p>
+            <Button 
+              onClick={() => navigate("/auth")}
+              className="bg-sarang-navy hover:bg-sarang-navy/90 text-white font-['Montserrat']"
+            >
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   useEffect(() => {
     if (!isSignedIn) {
-      navigate("/auth");
-      return;
+      return; // Don't navigate immediately, let the component render the sign-in message
     }
     
     fetchUserHistory();
-  }, [isSignedIn, navigate]);
+  }, [isSignedIn]);
 
   const fetchUserHistory = async () => {
     try {

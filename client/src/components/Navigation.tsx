@@ -29,7 +29,6 @@ export const Navigation = () => {
     }
   };
 
-  // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -87,7 +86,7 @@ export const Navigation = () => {
               >
                 <User className="w-5 h-5 text-white" />
                 <span className="text-white text-base font-bold">
-                  {isSignedIn ? (user?.firstName || 'Profile') : 'Profile'}
+                  {isSignedIn ? (user?.firstName || 'Profile') : 'Sign In'}
                 </span>
                 <ChevronDown className={`w-5 h-5 text-white transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -95,13 +94,13 @@ export const Navigation = () => {
               {/* Dropdown Menu */}
               {isProfileDropdownOpen && (
                 <div 
-                  className="absolute right-0 top-full mt-2 w-52 rounded-lg shadow-xl border-2 overflow-hidden z-30 bg-sarang-cream border-sarang-charcoal"
+                  className="absolute right-0 top-full mt-2 w-60 rounded-lg shadow-xl border-2 overflow-hidden z-30 bg-sarang-cream border-sarang-charcoal"
                 >
                   <div className="py-2">
                     {isSignedIn ? (
                       <>
                         <div className="px-5 py-3 border-b border-sarang-charcoal">
-                          <p className="text-sm font-bold text-sarang-charcoal">
+                          <p className="text-sm font-bold text-sarang-charcoal break-words whitespace-normal">
                             {user?.emailAddresses?.[0]?.emailAddress}
                           </p>
                         </div>
@@ -213,7 +212,7 @@ export const Navigation = () => {
                     <>
                       <div className="px-6 py-3 bg-sarang-cream/10 rounded-lg">
                         <p className="text-sarang-cream text-sm opacity-75 mb-1">Signed in as</p>
-                        <p className="text-white font-bold truncate">
+                        <p className="text-white font-bold break-words whitespace-normal">
                           {user?.emailAddresses?.[0]?.emailAddress}
                         </p>
                       </div>

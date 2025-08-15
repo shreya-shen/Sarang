@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { ArrowRight, Sparkles, User, Settings, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import { useAuthenticatedFetch } from "@/hooks/useAuthenticatedFetch";
 
@@ -21,6 +21,7 @@ const Home = () => {
   } | null>(null);
   const navigate = useNavigate();
   const { isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
   const { authenticatedFetch } = useAuthenticatedFetch();
 
   // Handle pending username from signup
@@ -230,7 +231,7 @@ const Home = () => {
                 >
                   <User className="w-5 h-5 text-white" />
                   <span className="text-white text-base font-bold">
-                    {isSignedIn ? (user?.firstName || 'Profile') : 'Profile'}
+                    {isSignedIn ? (user?.firstName || 'Profile') : 'Sign In'}
                   </span>
                   <ChevronDown className={`w-5 h-5 text-white transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -238,13 +239,13 @@ const Home = () => {
                 {/* Dropdown Menu */}
                 {isProfileDropdownOpen && (
                   <div 
-                    className="absolute right-0 top-full mt-2 w-52 rounded-lg shadow-xl border-2 overflow-hidden z-30 border-sarang-charcoal"
+                    className="absolute right-0 top-full mt-2 w-60 rounded-lg shadow-xl border-2 overflow-hidden z-30 border-sarang-charcoal"
                     style={{ backgroundColor: '#fff5da' }}
                   >
                     <div className="py-2">{isSignedIn ? (
                         <>
                           <div className="px-5 py-3 border-b border-sarang-charcoal">
-                            <p className="text-sm font-bold text-sarang-charcoal">
+                            <p className="text-sm font-bold text-sarang-charcoal break-words whitespace-normal">
                               {user?.emailAddresses?.[0]?.emailAddress}
                             </p>
                           </div>
@@ -270,10 +271,15 @@ const Home = () => {
                           </button>
                           <hr className="border-sarang-charcoal" />
                           <button
-                            onClick={() => {
-                              // Add sign out logic here
-                              setIsProfileDropdownOpen(false);
-                              toast.success('Signed out successfully');
+                            onClick={async () => {
+                              try {
+                                await signOut();
+                                setIsProfileDropdownOpen(false);
+                                toast.success('Signed out successfully');
+                                navigate('/');
+                              } catch (error) {
+                                toast.error('Error signing out');
+                              }
                             }}
                             className="w-full text-left px-5 py-3 text-base hover:opacity-80 transition-opacity font-semibold text-sarang-charcoal"
                           >
