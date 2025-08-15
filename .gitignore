@@ -1,26 +1,78 @@
+# Dependencies
 node_modules/
+*/node_modules/
+
+# Environment files
 .env
 .env.local
 .env.production
+.env.development
+*.env
+
+# Build outputs
 dist/
 build/
+*/dist/
+*/build/
+
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# SSL certificates
 ssl/
 *.key
 *.cert
+*.pem
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 env/
+venv/
+ENV/
 pip-log.txt
 pip-delete-this-directory.txt
 .coverage
 .pytest_cache/
 htmlcov/
+*.pkl
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Development files
+test_*.js
+*_test.js
+*.test.js
+*.spec.js
+start_complete_system.bat
+health-check-snippet.js
+
+# Ngrok
+*.ngrok-free.app
