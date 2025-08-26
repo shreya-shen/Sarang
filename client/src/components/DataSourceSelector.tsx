@@ -1,4 +1,5 @@
 
+import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -60,7 +61,7 @@ export const DataSourceSelector = () => {
                   </span>
                 </Button>
                 {isActive && (
-                  <Badge className={`absolute -top-2 -right-2 ${source.color}`}>
+                  <Badge className={`absolute -top-2 -right-2 ${source.color}`} variant="secondary">
                     Active
                   </Badge>
                 )}

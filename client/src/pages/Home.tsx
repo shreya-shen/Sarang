@@ -161,7 +161,7 @@ const Home = () => {
         {/* Main Image positioned to fill entire viewport */}
         <div className="relative w-full h-screen">
           <img 
-            src="/lovable-uploads/landingPageIcon.png" 
+            src="/assets/landingPageIcon.png" 
             alt="Music Therapy - Girl with flowing hair" 
             className="w-full h-full object-cover object-center hero-image"
             loading="eager"
@@ -172,11 +172,11 @@ const Home = () => {
           {/* Optional: Add a higher resolution version for high DPI displays */}
           <picture className="w-full h-full">
             <source 
-              srcSet="/lovable-uploads/landingPageIcon.png 1x, /lovable-uploads/landingPageIcon.png 2x" 
+              srcSet="/assets/landingPageIcon.png 1x, /assets/landingPageIcon.png 2x" 
               media="(min-width: 768px)"
             />
             <img 
-              src="/lovable-uploads/landingPageIcon.png" 
+              src="/assets/landingPageIcon.png" 
               alt="Music Therapy - Girl with flowing hair" 
               className="w-full h-full object-cover object-center absolute inset-0 hero-image"
               loading="eager"
@@ -190,7 +190,7 @@ const Home = () => {
             {/* Left - Sarang Logo and Name */}
             <div className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/Sarang-logo-transparent.png" 
+                src="/assets/Sarang-logo-transparent.png" 
                 alt="Sarang Logo" 
                 className="w-14 h-14 object-contain"
               />
@@ -210,7 +210,7 @@ const Home = () => {
                   Home
                 </button>
                 <button 
-                  onClick={() => navigate("/history")}
+                  onClick={() => navigate("/mood-history")}
                   className="text-lg text-white hover:text-white/80 transition-colors font-black tracking-wide"
                 >
                   History
@@ -249,16 +249,6 @@ const Home = () => {
                               {user?.emailAddresses?.[0]?.emailAddress}
                             </p>
                           </div>
-                          <button
-                            onClick={() => {
-                              navigate('/profile');
-                              setIsProfileDropdownOpen(false);
-                            }}
-                            className="w-full text-left px-5 py-3 text-base hover:opacity-80 transition-opacity flex items-center space-x-3 font-semibold text-sarang-charcoal"
-                          >
-                            <User className="w-5 h-5" />
-                            <span>Account</span>
-                          </button>
                           <button
                             onClick={() => {
                               navigate('/settings');
@@ -307,7 +297,7 @@ const Home = () => {
           {/* Main Content - Positioned exactly like reference */}
           <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">
             <div className="text-right space-y-6 max-w-md lg:max-w-lg z-10">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-sarang-coral leading-tight drop-shadow-2xl">
                 SARANG<br />
               </h1>
               
@@ -317,12 +307,6 @@ const Home = () => {
                 personalised soundscapes. 
               </p>
               
-              <Button 
-                size="lg"
-                className="bg-[#213447] hover:bg-[#213447]/90 text-white font-semibold px-8 py-3 rounded-full text-sm md:text-base transition-all duration-200 hover:shadow-2xl"
-              >
-                LEARN MORE
-              </Button>
             </div>
           </div>
         </div>

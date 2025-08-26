@@ -49,7 +49,7 @@ export const Navigation = () => {
           <Link to="/" className="flex items-center space-x-3 sm:space-x-3">
             <div className="relative">
               <img 
-                src="/lovable-uploads/Sarang-logo-transparent.png" 
+                src="/assets/Sarang-logo-transparent.png" 
                 alt="Sarang Logo" 
                 className="h-12 w-12 sm:h-14 sm:w-14 object-contain"
               />
@@ -104,16 +104,6 @@ export const Navigation = () => {
                             {user?.emailAddresses?.[0]?.emailAddress}
                           </p>
                         </div>
-                        <button
-                          onClick={() => {
-                            navigate('/profile');
-                            setIsProfileDropdownOpen(false);
-                          }}
-                          className="w-full text-left px-5 py-3 text-base hover:opacity-80 transition-opacity flex items-center space-x-3 font-semibold text-sarang-charcoal"
-                        >
-                          <User className="w-5 h-5" />
-                          <span>Account</span>
-                        </button>
                         <button
                           onClick={() => {
                             navigate('/settings');
@@ -216,16 +206,6 @@ export const Navigation = () => {
                           {user?.emailAddresses?.[0]?.emailAddress}
                         </p>
                       </div>
-                      <button
-                        onClick={() => {
-                          navigate('/profile');
-                          setMobileMenuOpen(false);
-                        }}
-                        className="w-full text-left px-6 py-3 text-lg font-bold text-sarang-cream hover:bg-sarang-brown/20 rounded-lg transition-colors flex items-center space-x-3"
-                      >
-                        <User className="w-5 h-5" />
-                        <span>Account</span>
-                      </button>
                       <button
                         onClick={() => {
                           navigate('/settings');

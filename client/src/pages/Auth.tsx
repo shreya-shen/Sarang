@@ -206,7 +206,7 @@ const Auth = () => {
           <div className="text-center space-y-4">
             <div className="flex justify-center">
               <img 
-                src="/lovable-uploads/db55ce61-da39-4838-a1cf-c1dc1a8e6c03.png" 
+                src="/assets/db55ce61-da39-4838-a1cf-c1dc1a8e6c03.png" 
                 alt="Sarang Logo" 
                 className="h-16 w-16"
               />

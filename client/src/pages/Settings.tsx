@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
 import { useAuthenticatedFetch } from "@/hooks/useAuthenticatedFetch";
 import { useUser } from "@clerk/clerk-react";
+import jsPDF from 'jspdf';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
@@ -27,6 +28,7 @@ const Settings = () => {
   const [topTracksPermission, setTopTracksPermission] = useState(false);
   const [topTracksLoading, setTopTracksLoading] = useState(false);
   const [topTracksStatus, setTopTracksStatus] = useState(null);
+  const [exportLoading, setExportLoading] = useState(false);
   
   const { spotifyLinked, setSpotifyLinked } = useApp();
   const { authenticatedFetch } = useAuthenticatedFetch();
@@ -344,11 +346,268 @@ const Settings = () => {
     }
   };
 
-  const handleExportData = () => {
+  // Helper function to convert sentiment score to mood label
+  const getMoodLabel = (score: number) => {
+    if (score >= 0.7) return 'Very Positive';
+    if (score >= 0.3) return 'Positive';
+    if (score >= 0.1) return 'Slightly Positive';
+    if (score >= -0.1) return 'Neutral';
+    if (score >= -0.3) return 'Slightly Negative';
+    if (score >= -0.7) return 'Negative';
+    return 'Very Negative';
+  };
+
+  const handleExportData = async () => {
+    if (!isSignedIn) {
+      toast.error("Please sign in to export your data");
+      return;
+    }
+
+    setExportLoading(true);
     toast.info("Preparing your data export...");
-    setTimeout(() => {
-      toast.success("Data export ready for download!");
-    }, 2000);
+
+    try {
+      // Fetch mood history
+      const moodResponse = await authenticatedFetch('/api/mood/history');
+      const moodData = moodResponse.ok ? await moodResponse.json() : [];
+
+      // Fetch playlist history
+      const playlistResponse = await authenticatedFetch('/api/playlist/history');
+      const playlistData = playlistResponse.ok ? await playlistResponse.json() : [];
+
+      console.log('Mood data:', moodData);
+      console.log('Playlist data:', playlistData);
+
+      // Create PDF
+      const pdf = new jsPDF();
+      const pageWidth = pdf.internal.pageSize.width;
+      const margin = 20;
+      let yPosition = 30;
+
+      // Helper function to add text with word wrap
+      const addText = (text: string, x: number, y: number, maxWidth: number, fontSize = 10) => {
+        pdf.setFontSize(fontSize);
+        const lines = pdf.splitTextToSize(text, maxWidth);
+        pdf.text(lines, x, y);
+        return y + (lines.length * fontSize * 0.5);
+      };
+
+      // Helper function to check if we need a new page
+      const checkPageBreak = (currentY: number, requiredSpace: number = 40) => {
+        if (currentY + requiredSpace > 280) {
+          pdf.addPage();
+          return 30;
+        }
+        return currentY;
+      };
+
+      // Header
+      pdf.setFillColor(215, 110, 114); // Sarang coral color
+      pdf.rect(0, 0, pageWidth, 25, 'F');
+      
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(18);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Sarang - Your Mood & Music Journey', margin, 18);
+      
+      pdf.setTextColor(0, 0, 0);
+      yPosition = 40;
+
+      // Export info
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(`Export Date: ${new Date().toLocaleDateString()}`, margin, yPosition);
+      pdf.text(`User: ${profileData.name || user?.fullName || 'User'}`, margin, yPosition + 8);
+      pdf.text(`Email: ${profileData.email || user?.primaryEmailAddress?.emailAddress || 'Not set'}`, margin, yPosition + 16);
+      yPosition += 35;
+
+      // Summary section
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Summary', margin, yPosition);
+      yPosition += 12;
+
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(`Total Mood Entries: ${moodData.length}`, margin + 5, yPosition);
+      pdf.text(`Total Playlists Generated: ${playlistData.length}`, margin + 5, yPosition + 8);
+      
+      if (moodData.length > 0) {
+        const avgSentiment = moodData.reduce((sum: number, entry: any) => 
+          sum + (entry.sentiment_score || entry.sentimentScore || 0), 0) / moodData.length;
+        pdf.text(`Average Mood Score: ${avgSentiment.toFixed(2)}`, margin + 5, yPosition + 16);
+      }
+      yPosition += 35;
+
+      // Mood History Section
+      if (moodData && moodData.length > 0) {
+        yPosition = checkPageBreak(yPosition, 30);
+        
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Mood History', margin, yPosition);
+        yPosition += 15;
+
+        moodData.forEach((entry: any, index: number) => {
+          yPosition = checkPageBreak(yPosition, 50);
+
+          // Entry header
+          pdf.setFillColor(240, 240, 240);
+          pdf.rect(margin, yPosition - 5, pageWidth - 2 * margin, 15, 'F');
+          
+          pdf.setFontSize(11);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text(`Entry ${index + 1} - ${new Date(entry.created_at || entry.date).toLocaleDateString()}`, margin + 3, yPosition + 5);
+          yPosition += 20;
+
+          // Entry details
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(9);
+          
+          const score = entry.sentiment_score || entry.sentimentScore || 0;
+          const mood = entry.mood_label || entry.moodLabel || entry.primary_emotion || getMoodLabel(score);
+          const input = entry.input_text || entry.inputText || 'No input';
+          
+          pdf.text(`Mood: ${mood} (Score: ${score.toFixed(2)})`, margin + 5, yPosition);
+          yPosition += 8;
+          
+          yPosition = addText(`Description: ${input}`, margin + 5, yPosition, pageWidth - 2 * margin - 10, 9);
+          yPosition += 15;
+        });
+      } else {
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'italic');
+        pdf.text('No mood entries found.', margin, yPosition);
+        yPosition += 20;
+      }
+
+      // Playlist History Section
+      if (playlistData && playlistData.length > 0) {
+        pdf.addPage();
+        yPosition = 30;
+
+        // Section header
+        pdf.setFillColor(215, 110, 114);
+        pdf.rect(0, yPosition - 10, pageWidth, 20, 'F');
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Playlist History', margin, yPosition + 3);
+        pdf.setTextColor(0, 0, 0);
+        yPosition += 25;
+
+        playlistData.forEach((entry: any, index: number) => {
+          try {
+            yPosition = checkPageBreak(yPosition, 80);
+
+            // Playlist header
+            pdf.setFillColor(250, 250, 250);
+            pdf.rect(margin, yPosition - 5, pageWidth - 2 * margin, 15, 'F');
+            
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(`Playlist ${index + 1} - ${new Date(entry.created_at).toLocaleDateString()}`, margin + 3, yPosition + 5);
+            yPosition += 20;
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9);
+            
+            const input = entry.input_text || entry.inputText || 'No input';
+            yPosition = addText(`Mood Description: ${input}`, margin + 5, yPosition, pageWidth - 2 * margin - 10, 9);
+            yPosition += 5;
+
+            // Add song recommendations if available
+            const songData = entry.song_data || entry.songData;
+            console.log(`Processing playlist ${index + 1}, songData:`, songData);
+            
+            if (songData?.recommendations) {
+              const songs = songData.recommendations;
+              console.log(`Songs for playlist ${index + 1}:`, songs, 'Type:', typeof songs, 'IsArray:', Array.isArray(songs));
+              
+              // Ensure songs is an array
+              if (Array.isArray(songs) && songs.length > 0) {
+                pdf.setFont('helvetica', 'bold');
+                pdf.text(`Generated Songs (${songs.length} recommendations):`, margin + 5, yPosition);
+                yPosition += 8;
+
+                pdf.setFont('helvetica', 'normal');
+                songs.slice(0, 10).forEach((song: any, songIndex: number) => {
+                  // Handle multiple possible song data structures
+                  const songName = song.track_name || song.name || song.title || 'Unknown Song';
+                  const artistName = song.artist_name || song.artists?.[0]?.name || song.artist || song.artists || 'Unknown Artist';
+                  
+                  const songText = `${songIndex + 1}. ${songName} by ${artistName}`;
+                  yPosition = addText(songText, margin + 10, yPosition, pageWidth - 2 * margin - 15, 8);
+                  yPosition += 3;
+                  
+                  if (yPosition > 270) {
+                    pdf.addPage();
+                    yPosition = 30;
+                  }
+                });
+
+                if (songs.length > 10) {
+                  yPosition = addText(`... and ${songs.length - 10} more songs`, margin + 10, yPosition, pageWidth - 2 * margin - 15, 8);
+                }
+              } else {
+                pdf.setFont('helvetica', 'italic');
+                pdf.text('Songs data format is invalid.', margin + 5, yPosition);
+                yPosition += 8;
+              }
+            } else {
+              pdf.setFont('helvetica', 'italic');
+              pdf.text('No songs generated for this playlist.', margin + 5, yPosition);
+              yPosition += 8;
+            }
+            yPosition += 15;
+          } catch (entryError) {
+            console.error(`Error processing playlist entry ${index + 1}:`, entryError, 'Entry:', entry);
+            pdf.setFont('helvetica', 'italic');
+            pdf.text(`Error processing playlist ${index + 1}`, margin + 5, yPosition);
+            yPosition += 15;
+          }
+        });
+      } else {
+        if (moodData.length === 0) {
+          pdf.addPage();
+          yPosition = 30;
+        }
+        
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Playlist History', margin, yPosition);
+        yPosition += 15;
+        
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'italic');
+        pdf.text('No playlists found.', margin, yPosition);
+      }
+
+      // Footer on last page
+      const totalPages = pdf.internal.pages.length - 1;
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setFont('helvetica', 'normal');
+        pdf.text(`Generated by Sarang - Page ${i} of ${totalPages}`, margin, 285);
+        pdf.text(`Exported on ${new Date().toLocaleString()}`, pageWidth - margin - 50, 285);
+      }
+
+      // Generate filename with timestamp
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const filename = `Sarang_Data_Export_${timestamp}.pdf`;
+
+      // Download PDF
+      pdf.save(filename);
+      
+      toast.success(`Successfully exported ${moodData.length} mood entries and ${playlistData.length} playlists to PDF!`);
+
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      toast.error("Failed to export data. Please try again.");
+    } finally {
+      setExportLoading(false);
+    }
   };
 
   return (
@@ -538,10 +797,7 @@ const Settings = () => {
                 <Switch
                   checked={notifications}
                   onCheckedChange={setNotifications}
-                  style={{ 
-                    '--switch-bg': '#d76e72',
-                    '--switch-thumb-bg': 'black'
-                  } as React.CSSProperties}
+                  className="data-[state=checked]:bg-sarang-coral"
                 />
               </div>
             </div>
@@ -581,7 +837,7 @@ const Settings = () => {
               <div className="flex items-center space-x-2">
                 <h3 className="font-medium text-sarang-charcoal font-['Montserrat']">Spotify Account</h3>
                 {spotifyConnected ? (
-                  <Badge className="bg-green-100 text-green-800 border-green-200">
+                  <Badge className="font-semibold" style={{ backgroundColor: '#8B966D', color: 'black', borderColor: '#6B7353' }}>
                     Connected
                   </Badge>
                 ) : (
@@ -620,14 +876,14 @@ const Settings = () => {
 
           {spotifyConnected && spotifyProfile && (
             <>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="rounded-lg p-4" style={{ backgroundColor: '#8B966D', borderColor: '#6B7353', borderWidth: '1px' }}>
                 <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span className="text-sm font-medium text-green-800">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#4A5240' }}></div>
+                  <span className="text-sm font-medium text-black">
                     Connected as: {spotifyProfile.spotify_display_name || spotifyProfile.spotify_email}
                   </span>
                 </div>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-black">
                   Your Spotify account is connected and ready to use. You can now import your liked songs, export playlists, and play music directly from Sarang.
                 </p>
               </div>
@@ -644,7 +900,7 @@ const Settings = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     {topTracksPermission ? (
-                      <Badge className="bg-green-100 text-green-800 border-green-200">
+                      <Badge className="font-semibold" style={{ backgroundColor: '#8B966D', color: 'black', borderColor: '#6B7353' }}>
                         <ShieldCheck className="w-3 h-3 mr-1" />
                         Enabled
                       </Badge>
@@ -658,18 +914,18 @@ const Settings = () => {
                 </div>
 
                 {topTracksPermission ? (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="rounded-lg p-4" style={{ backgroundColor: '#8B966D', borderColor: '#6B7353', borderWidth: '1px' }}>
                     <div className="flex items-center space-x-2 mb-2">
-                      <ShieldCheck className="w-4 h-4 text-green-600" />
-                      <span className="text-sm font-medium text-green-800">
+                      <ShieldCheck className="w-4 h-4" style={{ color: '#4A5240' }} />
+                      <span className="text-sm font-medium text-black">
                         Weekly updates active
                       </span>
                     </div>
-                    <p className="text-sm text-green-700 mb-3">
+                    <p className="text-sm text-black mb-3">
                       Your top tracks are being used for personalized recommendations. Updates happen automatically every week.
                     </p>
                     {topTracksStatus && (
-                      <div className="text-xs text-green-600 mb-3">
+                      <div className="text-xs mb-3" style={{ color: '#4A5240' }}>
                         {topTracksStatus.tracksCount} tracks stored • Last updated: {topTracksStatus.lastUpdated ? new Date(topTracksStatus.lastUpdated).toLocaleDateString() : 'Recently'}
                       </div>
                     )}
@@ -736,10 +992,7 @@ const Settings = () => {
                   <Switch
                     checked={autoExport}
                     onCheckedChange={setAutoExport}
-                    style={{ 
-                      '--switch-bg': '#d76e72',
-                      '--switch-thumb-bg': 'black'
-                    } as React.CSSProperties}
+                    className="data-[state=checked]:bg-sarang-coral"
                   />
                 </div>
               </div>
@@ -782,9 +1035,19 @@ const Settings = () => {
               variant="outline"
               style={{ backgroundColor: '#d76e72', color: 'black' }}
               className="hover:bg-opacity-90 font-['Montserrat'] border-black"
+              disabled={exportLoading}
             >
-              <Download className="w-4 h-4 mr-2" />
-              Export
+              {exportLoading ? (
+                <>
+                  <div className="w-4 h-4 mr-2 animate-spin border-2 border-gray-300 border-t-transparent rounded-full"></div>
+                  Exporting...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </>
+              )}
             </Button>
           </div>
 
