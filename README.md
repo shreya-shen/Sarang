@@ -2,7 +2,7 @@
 
 Sarang is an intelligent music recommendation system that analyzes your mood through text input and creates personalized Spotify playlists. Built with React, Node.js, Python ML pipeline, and integrated with Spotify Web API.
 
-![Sarang Logo](client/public/lovable-uploads/683c065d-86de-4501-9731-47c93b32d544.png)
+![Sarang Logo](client/public/assets/683c065d-86de-4501-9731-47c93b32d544.png)
 
 ## 🌟 Features
 
