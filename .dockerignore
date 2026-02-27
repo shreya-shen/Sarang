@@ -1,0 +1,11 @@
+node_modules
+client
+.git
+.env
+*.md
+.gitignore
+railway.toml
+nixpacks.toml
+vercel.json
+server/node_modules
+server/python/__pycache__
