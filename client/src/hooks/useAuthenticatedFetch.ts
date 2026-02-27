@@ -13,7 +13,7 @@ export const useAuthenticatedFetch = () => {
       throw new Error('Failed to get authentication token');
     }
 
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
     
     console.log('Making authenticated request to:', fullUrl);

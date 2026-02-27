@@ -1,5 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
+
+// Load env vars BEFORE importing routes so modules read correct values
+dotenv.config();
+
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const moodRoutes = require('./routes/mood');
@@ -8,7 +12,6 @@ const spotifyRoutes = require('./routes/spotify');
 const userRoutes = require('./routes/user');
 
 const app = express();
-dotenv.config();
 
 app.use(cors({
   origin: function(origin, callback) {

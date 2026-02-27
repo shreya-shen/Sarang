@@ -114,7 +114,7 @@ function startNodeServer() {
   setupGracefulShutdown();
 
   console.log('\nSarang is starting up!');
-  console.log(`Mood Service: http://localhost:8001 (if available)`);
+  console.log(`Mood Service: http://localhost:5001 (if available)`);
   console.log(`Main App: http://localhost:${port}`);
 }
 

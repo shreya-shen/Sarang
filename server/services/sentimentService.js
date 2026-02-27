@@ -95,43 +95,76 @@ const analyzeSentimentFast = async (text, serviceUrl = PYTHON_SERVICE_URL) => {
   }
 };
 
+/**
+ * JavaScript-based fallback sentiment analyzer.
+ * Uses keyword/pattern matching when the Python ML service is unavailable.
+ * Not as accurate as the ML model but provides a functional experience.
+ */
 const analyzeSentimentFallback = (text) => {
-  const { spawn } = require('child_process');
-  const path = require('path');
-  
-  return new Promise((resolve, reject) => {
-    const pythonDir = path.join(__dirname, '../python');
-    const python = spawn('python', ['sentiment_analysis.py'], {
-      cwd: pythonDir
-    });
+  const lower = text.toLowerCase().trim();
 
-    let output = '';
-    let error = '';
+  // Emotion keyword lists with weights
+  const emotionKeywords = {
+    happy: { words: ['happy', 'joy', 'excited', 'great', 'amazing', 'wonderful', 'fantastic', 'love', 'loving', 'cheerful', 'delighted', 'thrilled', 'glad', 'blessed', 'grateful', 'awesome', 'excellent', 'brilliant', 'beautiful', 'perfect', 'celebrate', 'yay', 'haha', 'lol', '😊', '😄', '🎉'], weight: 0.8 },
+    sad: { words: ['sad', 'unhappy', 'depressed', 'down', 'miserable', 'heartbroken', 'lonely', 'hopeless', 'despair', 'grief', 'crying', 'tears', 'hurt', 'pain', 'suffering', 'lost', 'empty', 'broken', 'miss', 'missing', '😢', '😭'], weight: -0.7 },
+    angry: { words: ['angry', 'furious', 'mad', 'rage', 'hate', 'frustrated', 'annoyed', 'irritated', 'pissed', 'livid', 'outraged', 'disgusted', 'ugh', 'damn', '😡', '🤬'], weight: -0.6 },
+    anxious: { words: ['anxious', 'worried', 'nervous', 'stressed', 'panic', 'fear', 'scared', 'afraid', 'overwhelmed', 'uneasy', 'restless', 'tense', 'dread', 'terrified', '😰', '😨'], weight: -0.5 },
+    calm: { words: ['calm', 'peaceful', 'relaxed', 'serene', 'tranquil', 'content', 'chill', 'mellow', 'zen', 'mindful', 'meditat', 'soothing', 'gentle', '😌', '🧘'], weight: 0.5 },
+    energetic: { words: ['energetic', 'pumped', 'motivated', 'inspired', 'driven', 'passionate', 'alive', 'vibrant', 'dynamic', 'fired up', 'lets go', 'hyped', '🔥', '💪'], weight: 0.7 },
+    neutral: { words: ['okay', 'fine', 'alright', 'normal', 'average', 'meh', 'so-so', 'whatever', 'nothing'], weight: 0.0 }
+  };
 
-    python.stdout.on('data', (data) => {
-      output += data.toString();
-    });
+  // Negation words that flip the sentiment
+  const negations = ['not', "don't", "doesn't", "didn't", "won't", "can't", "cannot", "never", "no", "isn't", "aren't", "wasn't", "weren't"];
 
-    python.stderr.on('data', (data) => {
-      error += data.toString();
-    });
+  let bestEmotion = 'neutral';
+  let bestMatchCount = 0;
+  let sentimentScore = 0;
 
-    python.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`Python sentiment analysis failed: ${error}`));
-      } else {
-        try {
-          const result = JSON.parse(output);
-          resolve(result.sentiment_score);
-        } catch (err) {
-          reject(new Error('Invalid JSON from Python sentiment analysis')); 
-        }
-      }
-    });
+  // Check for negation
+  const hasNegation = negations.some(neg => lower.includes(neg));
 
-    python.stdin.write(JSON.stringify({ text: text }));
-    python.stdin.end();
-  });
+  for (const [emotion, { words, weight }] of Object.entries(emotionKeywords)) {
+    const matchCount = words.filter(w => lower.includes(w)).length;
+    if (matchCount > bestMatchCount) {
+      bestMatchCount = matchCount;
+      bestEmotion = emotion;
+      sentimentScore = weight;
+    }
+  }
+
+  // Flip sentiment if negation detected with positive/negative emotions
+  if (hasNegation && bestEmotion !== 'neutral') {
+    sentimentScore = -sentimentScore * 0.7;
+    if (bestEmotion === 'happy') bestEmotion = 'sad';
+    else if (bestEmotion === 'sad') bestEmotion = 'neutral';
+  }
+
+  // Default to slightly positive neutral if nothing matched
+  if (bestMatchCount === 0) {
+    sentimentScore = 0.1;
+    bestEmotion = 'neutral';
+  }
+
+  const confidence = Math.min(0.4 + bestMatchCount * 0.1, 0.75);
+
+  return {
+    sentiment_score: sentimentScore,
+    score: sentimentScore,
+    confidence: confidence,
+    primary_emotion: bestEmotion,
+    label: bestEmotion,
+    emotion_confidence: confidence,
+    intensity_level: Math.abs(sentimentScore) > 0.6 ? 'high' : Math.abs(sentimentScore) > 0.3 ? 'medium' : 'low',
+    context_detected: [],
+    mixed_emotions: false,
+    negation_detected: hasNegation,
+    approach: 'javascript_keyword_fallback',
+    processing_time: 0,
+    ultra_advanced: false,
+    method: 'js_fallback',
+    accuracy_level: 'basic'
+  };
 };
 
 const analyzeSentiment = async (text) => {
@@ -143,28 +176,29 @@ const analyzeSentiment = async (text) => {
     return cachedResult;
   }
 
-  let sentimentResult;
-  
+  // Try the Python ML service first (high accuracy)
   const ultraServiceAvailable = await checkServiceHealth(PRODUCTION_MOOD_SERVICE_URL);
   if (ultraServiceAvailable) {
     console.log('Using Ultra-Advanced Production Mood Service (95%+ accuracy)');
     try {
       const result = await analyzeUltraAdvanced(text);
-      
       result.ultra_advanced = true;
       result.method = 'ultra_advanced_ai';
       result.accuracy_level = '95%+';
       moodCache.set(cacheKey, result);
       return result;
-      
     } catch (error) {
-      console.log('Ultra-Advanced service failed:', error.message);
-      throw new Error('High-accuracy sentiment analysis service unavailable');
+      console.warn('Ultra-Advanced service failed, falling back to JS analysis:', error.message);
     }
   } else {
-    console.log('Ultra-Advanced service not available');
-    throw new Error('High-accuracy sentiment analysis service not running on port 5001');
+    console.log('Python ML service not available, using JavaScript fallback');
   }
+
+  // Fallback: JavaScript keyword-based analysis
+  console.log('Using JavaScript fallback sentiment analysis');
+  const fallbackResult = analyzeSentimentFallback(text);
+  moodCache.set(cacheKey, fallbackResult);
+  return fallbackResult;
 };
 
 // Export functions for use in the project
