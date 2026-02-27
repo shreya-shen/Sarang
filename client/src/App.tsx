@@ -4,19 +4,29 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import { AppProvider } from '@/contexts/AppContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { Layout } from "@/components/Layout";
-import Home from "./pages/Home";
-import Auth from "./pages/Auth";
-import Recommendations from "./pages/Recommendations";
-import MoodHistory from "./pages/MoodHistory";
-import Settings from "./pages/Settings";
-import About from "./pages/About";
-import NotFound from "./pages/NotFound";
 import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
 
+// Lazy load pages for better code splitting
+const Home = lazy(() => import("./pages/Home"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Recommendations = lazy(() => import("./pages/Recommendations"));
+const MoodHistory = lazy(() => import("./pages/MoodHistory"));
+const Settings = lazy(() => import("./pages/Settings"));
+const About = lazy(() => import("./pages/About"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
 const queryClient = new QueryClient();
+
+// Loading component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,19 +36,21 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              {/* Home page without layout/navbar */}
-              <Route path="/" element={<Home />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/sso-callback" element={<AuthenticateWithRedirectCallback />} />
-              
-              {/* Other pages with layout/navbar */}
-              <Route path="/recommendations" element={<Layout><Recommendations /></Layout>} />
-              <Route path="/mood-history" element={<Layout><MoodHistory /></Layout>} />
-              <Route path="/settings" element={<Layout><Settings /></Layout>} />
-              <Route path="/about" element={<Layout><About /></Layout>} />
-              <Route path="*" element={<Layout><NotFound /></Layout>} />
-            </Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Home page without layout/navbar */}
+                <Route path="/" element={<Home />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/sso-callback" element={<AuthenticateWithRedirectCallback />} />
+                
+                {/* Other pages with layout/navbar */}
+                <Route path="/recommendations" element={<Layout><Recommendations /></Layout>} />
+                <Route path="/mood-history" element={<Layout><MoodHistory /></Layout>} />
+                <Route path="/settings" element={<Layout><Settings /></Layout>} />
+                <Route path="/about" element={<Layout><About /></Layout>} />
+                <Route path="*" element={<Layout><NotFound /></Layout>} />
+              </Routes>
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </AppProvider>

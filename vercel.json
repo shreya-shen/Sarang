@@ -7,6 +7,12 @@
       "config": { "distDir": "dist" }
     }
   ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://sarang-production.up.railway.app/api/$1"
+    }
+  ],
   "routes": [
     {
       "src": "/assets/(.*)",
@@ -14,7 +20,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/client/dist/index.html"
     }
   ],
   "outputDirectory": "client/dist"

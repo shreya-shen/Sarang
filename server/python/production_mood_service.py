@@ -1,6 +1,7 @@
 """
 Production Ultra-Advanced Mood Detection Service
 Integrated with the main project - 81%+ accuracy achieved
+POST-MIGRATION: Uses Supabase database for all song recommendations
 """
 import asyncio
 import json
@@ -9,7 +10,7 @@ import sys
 import time
 import uvicorn
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,6 +21,13 @@ from improved_mood_ai import (
     ultra_advanced_analyze_mood, 
     UltraAdvancedMoodResponse,
     initialize_ultra_advanced_models
+)
+
+# Import the new database manager
+from spotify_database_manager import (
+    get_spotify_manager,
+    get_mood_based_recommendations,
+    get_data_source_status
 )
 
 # Setup logging
@@ -70,6 +78,51 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint with database status"""
+    try:
+        # Get database status
+        db_status = get_data_source_status()
+        
+        return {
+            "status": "healthy",
+            "timestamp": time.time(),
+            "service": "Ultra-Advanced Mood Analysis v4.0",
+            "database": db_status,
+            "features": {
+                "mood_analysis": True,
+                "song_recommendations": True,
+                "database_integration": db_status["supabase_connected"]
+            }
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy", 
+            "error": str(e),
+            "timestamp": time.time()
+        }
+
+@app.get("/database/status")
+async def database_status():
+    """Get detailed database connection status"""
+    try:
+        status = get_data_source_status()
+        manager = get_spotify_manager()
+        
+        return {
+            "data_source": status["data_source"],
+            "track_count": f"{status['track_count']:,}",
+            "is_production_ready": status["is_production_ready"],
+            "supabase_connected": status["supabase_connected"],
+            "migration_status": "completed" if status["is_production_ready"] else "pending",
+            "recommendation": "All songs accessed from database" if status["is_production_ready"] else "Consider migrating to Supabase for better performance"
+        }
+    except Exception as e:
+        logger.error(f"Database status check failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/analyze", response_model=LegacyMoodResponse)
 async def analyze_mood(request: MoodAnalysisRequest):

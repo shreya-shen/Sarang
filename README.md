@@ -203,7 +203,7 @@ features = [
 - **AI-First Approach**: Minimal keyword dependency for better accuracy
 - **Response Time**: <1.5s for mood analysis and recommendation
 - **Dataset Coverage**: 50+ genres, 10K+ artists
-- **Accuracy Improvement**: ~15% better than keyword-based approaches
+   - **Accuracy Improvement**: ~15% better than keyword-based approaches
 
 
 ## 🔗 API Endpoints

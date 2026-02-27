@@ -1,0 +1,48 @@
+# Vercel deployment excludes
+# These files are not needed in production
+
+# Python files and cache - not used on Vercel
+server/python/
+**/__pycache__/
+*.pyc
+
+# Development and build tools
+node_modules/
+*.log
+npm-debug.log*
+
+# Local environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Documentation
+*.md
+!README.md
+
+# Local development scripts
+start-services.js
+server/start-services.js
+server/start-production.js
+
+# Lock files (Vercel handles these)
+package-lock.json
+bun.lockb
+
+# Railway/other platform configs
+railway.toml
+nixpacks.toml
+Procfile
+
+# Large assets that are not critical for deployment
+*.csv
+server/python/cleaned_spotify.csv
+
+# Keep essential UI assets but exclude overly large design files
+# Note: landingPageIcon.png is 1MB+ - consider optimizing but keeping for now
+
+# IDE and OS
+.vscode/
+.DS_Store
+Thumbs.db
