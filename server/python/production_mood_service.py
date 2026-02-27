@@ -24,11 +24,38 @@ from improved_mood_ai import (
 )
 
 # Import the new database manager
-from spotify_database_manager import (
-    get_spotify_manager,
-    get_mood_based_recommendations,
-    get_data_source_status
-)
+try:
+    from spotify_database_manager import (
+        get_spotify_manager,
+        get_mood_based_recommendations,
+        get_data_source_status
+    )
+except Exception:
+    # Fallback stub implementations when the real module isn't available
+    import logging
+    from typing import Dict, Any, List
+
+    _logger = logging.getLogger(__name__)
+
+    def get_spotify_manager():
+        """Return a dummy manager object with a minimal interface used by the app."""
+        class DummyManager:
+            def get_recommendations(self, mood: str, limit: int = 10) -> List[Dict[str, Any]]:
+                return []
+        return DummyManager()
+
+    def get_mood_based_recommendations(mood: str, limit: int = 10):
+        """Return an empty recommendations list as a placeholder."""
+        return []
+
+    def get_data_source_status():
+        """Return a conservative default status indicating no external DB connection."""
+        return {
+            "data_source": "local_stub",
+            "track_count": 0,
+            "is_production_ready": False,
+            "supabase_connected": False
+        }
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
