@@ -48,6 +48,6 @@ setTimeout(() => {
 }, 3000); // Wait 3 seconds for Python service to initialize
 
 console.log('\nBoth services will be available shortly!');
-console.log('Mood Service: http://localhost:8001');
+console.log('Mood Service: http://localhost:5001');
 console.log('Main App: http://localhost:5000 (or your configured port)');
 console.log('\nPress Ctrl+C to stop both services');

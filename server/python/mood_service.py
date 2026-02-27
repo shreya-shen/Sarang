@@ -917,5 +917,6 @@ async def prewarm_service():
     }
 
 if __name__ == "__main__":
-    print("🎵 Starting Sarang Mood Analysis Service...")
-    uvicorn.run(app, host="0.0.0.0", port=8001, log_level="info")
+    port = int(os.getenv('MOOD_SERVICE_PORT', 5001))
+    print(f"🎵 Starting Sarang Mood Analysis Service on port {port}...")
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")

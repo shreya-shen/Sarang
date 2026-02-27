@@ -1,11 +1,7 @@
 [build]
 builder = "NIXPACKS"
 
-[build.nixpacksConfigPath]
-
 [deploy]
-startCommand = "node start-services.js"
+startCommand = "cd server && node start-production.js"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
-
-[environments.production.variables]

@@ -3,8 +3,7 @@ nixPkgs = ['nodejs_18', 'python311', 'python311Packages.pip']
 
 [phases.install]
 cmds = [
-    'npm install',
-    'cd server && npm install', 
+    'cd server && npm install',
     'cd server/python && pip install -r requirements.txt'
 ]
 
@@ -12,8 +11,7 @@ cmds = [
 cmds = ['echo "Build completed successfully"']
 
 [start]
-cmd = 'node start-services.js'
+cmd = 'cd server && node start-production.js'
 
 [variables]
 NODE_ENV = 'production'
-PORT = '5000'

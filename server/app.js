@@ -16,18 +16,26 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
-      process.env.CLIENT_URL || 'http://localhost:8080',
       'http://localhost:8080',
-      'https://f822f56e9b9f.ngrok-free.app'
+      'http://localhost:5173',
     ];
     
-    if (process.env.NODE_ENV === 'production' && process.env.CLIENT_URL) {
+    // Add the configured CLIENT_URL (e.g. your Vercel domain)
+    if (process.env.CLIENT_URL) {
       allowedOrigins.push(process.env.CLIENT_URL);
+    }
+    
+    // In production, also allow any Vercel preview URLs
+    if (process.env.NODE_ENV === 'production' && origin) {
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
     }
     
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.warn(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -52,8 +60,6 @@ app.use('/api/user', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-// Run HTTP server for ngrok tunneling
-app.listen(PORT, () => {
-  console.log(`HTTP Server running on http://localhost:${PORT}`);
-  console.log(`Ready for ngrok tunneling to enable Spotify HTTPS callbacks`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);
 });
