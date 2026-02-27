@@ -158,7 +158,8 @@ async def lifespan(app: FastAPI):
         
         # Load dataset
         print("Loading Spotify dataset...")
-        df = pd.read_csv("./cleaned_spotify.csv")
+        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cleaned_spotify.csv")
+        df = pd.read_csv(csv_path)
         print(f"Loaded {len(df)} tracks")
         
         # Pre-compute clustering with better feature selection
@@ -233,8 +234,13 @@ async def lifespan(app: FastAPI):
         
     except Exception as e:
         print(f"Error loading models: {str(e)}")
+        import traceback
+        traceback.print_exc()
         models_loaded = False
-        raise e
+        # Don't raise — let the service start in degraded mode
+        # The /health endpoint will report models_loaded=False
+        print("WARNING: Starting in degraded mode (some models unavailable)")
+        print("Sarang Enhanced Mood Analysis Service is ready!")
     
     yield
     

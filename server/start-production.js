@@ -14,38 +14,26 @@ const port = process.env.PORT || 5000;
 console.log(`Starting Sarang in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} mode...\n`);
 
 const pythonServicePath = path.join(__dirname, 'python', 'mood_service.py');
-const requirementsPath = path.join(__dirname, 'python', 'requirements_service.txt');
 
 if (!fs.existsSync(pythonServicePath)) {
-  console.error('Python mood service not found. Starting without optimization...');
+  console.error('Python mood service not found. Starting without it...');
   startNodeServer();
   return;
 }
 
-if (fs.existsSync(requirementsPath)) {
-  console.log('Checking Python dependencies...');
-  exec('pip install -r requirements_service.txt', {
-    cwd: path.join(__dirname, 'python')
-  }, (error, stdout, stderr) => {
-    if (error) {
-      console.warn('Python dependencies installation failed:', error.message);
-      console.log('Continuing without Python service...');
-      startNodeServer();
-    } else {
-      console.log('Python dependencies ready');
-      startPythonService();
-    }
-  });
-} else {
-  startPythonService();
-}
+// Skip pip install in Docker (deps are pre-installed in the image)
+// Go straight to starting the Python service
+startPythonService();
 
 function startPythonService() {
   console.log('Starting Python Mood Analysis Service...');
   
-  const pythonService = spawn('python', ['mood_service.py'], {
+  // Try 'python3' first (standard on Debian/Ubuntu), fallback to 'python'
+  const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  const pythonService = spawn(pythonCmd, ['mood_service.py'], {
     cwd: path.join(__dirname, 'python'),
-    stdio: ['ignore', 'pipe', 'pipe']
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, PYTHONUNBUFFERED: '1' }
   });
 
   let pythonReady = false;
@@ -83,12 +71,13 @@ function startPythonService() {
   });
 
   // Fallback: start Node server after timeout even if Python isn't ready
+  // ML models can take 30-60s to load on cold start
   setTimeout(() => {
     if (!pythonReady) {
-      console.log('⏱️ Python service taking too long, starting Node server...');
+      console.log('⏱️ Python service still loading, starting Node server in parallel...');
       startNodeServer();
     }
-  }, 15000);
+  }, 60000);
 
   process.pythonService = pythonService;
 }
