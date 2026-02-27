@@ -7,9 +7,9 @@ WORKDIR /deps
 COPY server/python/requirements.txt .
 RUN pip install --no-cache-dir \
     --extra-index-url https://download.pytorch.org/whl/cpu \
-    torch==2.0.1+cpu \
+    torch --find-links https://download.pytorch.org/whl/cpu \
   && pip install --no-cache-dir -r requirements.txt \
-  && python -m spacy download en_core_web_sm
+  && pip install --no-cache-dir en-core-web-sm@https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0-py3-none-any.whl
 
 # --- Stage 2: Final runtime image ---
 FROM node:18-slim
