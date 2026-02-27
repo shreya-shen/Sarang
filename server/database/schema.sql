@@ -9,12 +9,13 @@
 -- =============================================================================
 
 -- Create profiles table (extends Supabase auth.users)
+-- NOTE: The app uses Clerk auth (not Supabase auth), so id is a plain UUID
+-- generated from the Clerk user ID via SHA-256 hashing.
 CREATE TABLE IF NOT EXISTS profiles (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  username TEXT UNIQUE,
-  full_name TEXT,
-  avatar_url TEXT,
+  id UUID PRIMARY KEY,
+  name TEXT,
   email TEXT,
+  avatar_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -33,7 +34,7 @@ CREATE POLICY "Users can insert own profile" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Create index for performance
-CREATE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username);
+CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 
 -- =============================================================================
 -- 2. SPOTIFY INTEGRATION TABLES
@@ -182,7 +183,31 @@ CREATE INDEX IF NOT EXISTS idx_user_preference_tracks_user_id ON user_preference
 CREATE INDEX IF NOT EXISTS idx_user_preference_tracks_updated_at ON user_preference_tracks(updated_at);
 
 -- =============================================================================
--- 4. MOOD ANALYSIS AND PLAYLIST GENERATION
+-- 4. MOOD TRACKING
+-- =============================================================================
+
+-- User mood entries (logged from the frontend)
+CREATE TABLE IF NOT EXISTS moods (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  "userId" UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  "inputText" TEXT NOT NULL,
+  "sentimentScore" FLOAT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS on moods
+ALTER TABLE moods ENABLE ROW LEVEL SECURITY;
+
+-- Moods policy (service role bypasses RLS, but included for completeness)
+CREATE POLICY "Users can access their own moods" ON moods
+  FOR ALL USING ("userId" = auth.uid());
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_moods_userId ON moods("userId");
+CREATE INDEX IF NOT EXISTS idx_moods_created_at ON moods(created_at);
+
+-- =============================================================================
+-- 5. PLAYLIST GENERATION (legacy/optional)
 -- =============================================================================
 
 -- Playlists generated from mood analysis
