@@ -205,32 +205,6 @@ features = [
 - **Dataset Coverage**: 50+ genres, 10K+ artists
    - **Accuracy Improvement**: ~15% better than keyword-based approaches
 
-
-## 🔗 API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-- `GET /api/auth/status` - Check auth status
-
-### Spotify Integration
-- `GET /api/spotify/auth` - Get Spotify authorization URL
-- `GET /api/spotify/callback` - Handle OAuth callback
-- `GET /api/spotify/status` - Check connection status
-- `POST /api/spotify/create-playlist` - Create mood playlist
-- `GET /api/spotify/devices` - Get available devices
-- `POST /api/spotify/play` - Play track on device
-
-### Recommendations
-- `POST /api/recommendations/mood` - Get mood-based recommendations
-- `GET /api/recommendations/history` - User recommendation history
-- `POST /api/mood/analyze` - Analyze mood from text
-
-### User Management
-- `GET /api/user/profile` - Get user profile
-- `GET /api/user/playlists` - Get user playlists
-- `POST /api/user/preferences` - Update preferences
-
 ## Development
 
 ### Code Style
@@ -268,8 +242,6 @@ features = [
 - Write tests for new features
 - Update documentation
 - Follow conventional commit format
-
-## Support
 
 For support and questions:
 - Email: shreya.shenoy01@gmail.com
